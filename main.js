@@ -1,13 +1,17 @@
-/** ====================================================================
- * p5.(gen)Zine
- * Copyright (c) 2023 Munus Shih, https://github.com/munusshih
+/**@preserve ==========================================================
  *
- * Licensed under the MIT License.
- * http://opensource.org/licenses/mit-license
+ * p5.zine
+ * Copyright (c) 2024 Munus Shih, Tuan Huang, Iley Cao
+ *
+ * Licensed under GNU General Public License.
+ * https://www.gnu.org/licenses
  ====================================================================*/
 
 // HTML-----------------------------------------
-document.body.innerHTML += `  <nav>
+document.body.innerHTML += `
+
+<base target="_blank">
+<nav>
     <div class="title">
     <h1 id="genTitle">GenZ(ine)</h1>
     <h2 id="author">by Munus Shih</h2>
@@ -22,7 +26,7 @@ document.body.innerHTML += `  <nav>
   </div>
 
 
-<div class="label" id="nav-label"><a href="https://github.com/munusshih/p5.genzine">made with
+<div class="label" id="nav-label"><a href="https://github.com/munusshih/p5.genzine" target="_blank" rel="noopener noreferrer">>made with
     p5.(gen)zine</a></div>
 
 <div id="myCanvas"></div>
@@ -34,6 +38,7 @@ document.body.innerHTML += `  <nav>
   <p id="des">
     This zine is about...
   </p>
+
 </footer>`
 
 // css------------------------------------------
@@ -555,6 +560,7 @@ p5.prototype.randomLayout = function (
 ) {
   const sizer = size*10;
   this.push();
+
   this.translate(this.width / 2, this.height / 2);
   for (let i = 0; i < repeat; i++) {
     for (let j = 0; j < word.length; j++) {
@@ -780,13 +786,137 @@ p5.prototype.textSet = function (
   theFont = "Averia Libre",
   theSize = 20,
   theAlign = LEFT,
-  theLead = theSize
+  theLead = theSize,
+  theColor
 ) {
+  if(typeof theColor !== "undefined" && typeof theColor !== null){
+    this.fill(theColor)
+  }
   this.textFont(theFont);
   this.textSize(theSize);
   this.textAlign(theAlign);
   this.textLeading(theLead);
 };
+
+p5.prototype.textBox = function (
+  inputText,
+  startX = 0,
+  startY = 0,
+  boxWidth = this.width,
+  boxHeight = this.height,
+  gapX = 50,
+  showBox = false
+) {
+  let paragraphs = inputText.split("\n");
+  let lineHeight = this.textAscent() + this.textDescent();
+  let currentY = startY;
+  let currentX = startX;
+  let textAlignMode = this.textAlign().horizontal;
+  let textVerticalAlignMode = this.textAlign().vertical;
+
+  let linesInColumn = [];
+  let currentColumn = 0;
+  let linesCount = 0;
+
+  // Calculate the total number of lines in each column
+  for (const paragraph of paragraphs) {
+    let words = paragraph.split(" ");
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length + 1; i++) {
+      let word = words[i];
+      let nextLine = currentLine + " " + word;
+
+      if (i < words.length && ceil(this.textWidth(nextLine)) < boxWidth) {
+        currentLine = nextLine;
+      } else {
+        linesCount++;
+        currentY += lineHeight;
+
+        if (currentY + lineHeight > startY + boxHeight) {
+          linesInColumn[currentColumn] = linesCount;
+          linesCount = 0;
+          currentY = startY;
+          currentX += boxWidth + gapX;
+          currentColumn++;
+        }
+
+        currentLine = word;
+      }
+    }
+  }
+
+  linesInColumn[currentColumn] = linesCount;
+
+  // Draw the text with the correct alignment
+  currentY = startY;
+  currentX = startX;
+  currentColumn = 0;
+  linesCount = 0;
+
+  for (const paragraph of paragraphs) {
+    let words = paragraph.split(" ");
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length + 1; i++) {
+      let word = words[i];
+      let nextLine = currentLine + " " + word;
+
+      if (i < words.length && ceil(this.textWidth(nextLine)) < boxWidth) {
+        currentLine = nextLine;
+      } else {
+        let offsetX = 0;
+        let offsetY = 0;
+
+        // Calculate horizontal offset based on textAlign
+        if (textAlignMode === this.CENTER) {
+          offsetX = boxWidth / 2;
+        } else if (textAlignMode === this.RIGHT) {
+          offsetX = boxWidth;
+        }
+
+        // Calculate vertical offset based on textBaseline
+        if (textVerticalAlignMode === this.CENTER) {
+          offsetY = ceil(
+            (boxHeight - (linesInColumn[currentColumn] - 1) * lineHeight) / 2
+          );
+        } else if (textVerticalAlignMode === this.BOTTOM) {
+          offsetY = ceil(
+            boxHeight - (linesInColumn[currentColumn] - 1) * lineHeight
+          );
+        }
+
+        this.text(currentLine, currentX + offsetX, currentY + offsetY);
+
+        currentY += lineHeight;
+
+        if (currentY + lineHeight > startY + boxHeight) {
+          currentY = startY;
+          currentX += boxWidth + gapX;
+          currentColumn++;
+        }
+
+        currentLine = word;
+      }
+    }
+  }
+
+  // console.log(linesInColumn);
+
+  // Draw outlines for text boxes
+  if (showBox === true) {
+    this.push();
+    this.stroke(0, 0, 255);
+    this.strokeWeight(1);
+    this.noFill();
+    let numColumns = Math.ceil((currentX - startX) / (boxWidth + gapX)) + 1;
+    for (let i = 0; i < numColumns; i++) {
+      this.rect(startX + i * (boxWidth + gapX), startY, boxWidth, boxHeight);
+    }
+    this.pop();
+  }
+};
+
 
 const rWidth = 198;
 const rHeight = 306;
@@ -797,6 +927,9 @@ let cover, one, two, three, back;
 let aWidth, aHeight, gap;
 let borderYes = true;
 let selfie;
+let fR = 10
+let pD = 1
+const all =[];
 
 
 // p5 -----------------------------------
@@ -807,6 +940,11 @@ function setup() {
   myCanvas.parent("#myCanvas");
 
   updateAdaptiveWidth()
+
+  if(typeof zine !== "undefined" && typeof zine !== null){
+    fR = typeof zine.frameRate !== "undefined"? zine.frameRate : fR
+    pD = typeof zine.pixelDensity !== "undefined"? zine.pixelDensity : pD
+  }
   // noLoop()
 
   cover = createGraphics(pWidth, pHeight);
@@ -815,24 +953,45 @@ function setup() {
   three = createGraphics(pWidth * 2, pHeight);
   back = createGraphics(pWidth, pHeight);
 
-  pixelDensity(2)
-  changePixelDensity(2);
+  all.push(cover, one, two, three, back)
 
-  const fR = zine.frameCount? zine.frameCount : 10
+  // pageSize attr
+  cover.pageSize = 'single'
+  one.pageSize = 'full'
+  two.pageSize = 'full'
+  three.pageSize = 'full'
+  back.pageSize = 'single'
 
+  pixelDensity(1)
   frameRate(fR);
   angleMode(DEGREES);
   noStroke()
   changeTitle()
-  setupPage()
+  if(typeof setupPage === 'function'){setupPage()}
 
-  selfie = createCapture(VIDEO);
-  selfie.hide();
+  if(zine.cam === false || zine.cam === "false" || zine.cam === "False" || zine.cam === "FALSE"){
+
+  }else{
+    selfie = createCapture(VIDEO);
+    selfie.hide();
+  }
+
+  if(typeof coverSet === 'function'){coverSet()}
+  if(typeof oneSet === 'function'){oneSet()}
+  if(typeof twoSet === 'function'){twoSet()}
+  if(typeof threeSet === 'function'){threeSet()}
+  if(typeof backSet === 'function'){backSet()}
 }
 
 function draw() {
-  // if (borderYes) {
-  // }
+
+  if (borderYes) {
+    pixelDensity(2);
+    changePixelDensity(2);
+  } else {
+    pixelDensity(5);
+    changePixelDensity(5);
+  }
 
   mousePosition()
 
@@ -841,7 +1000,14 @@ function draw() {
   if(typeof onePage === 'function'){onePage()}
   if(typeof twoPage === 'function'){twoPage()}
   if(typeof threePage === 'function'){threePage()}
-  if(typeof backPag === 'function'){backPage()}
+  if(typeof backPage === 'function'){backPage()}
+
+  if(typeof coverDraw === 'function'){coverDraw()}
+  if(typeof oneDraw === 'function'){oneDraw()}
+  if(typeof twoDraw === 'function'){twoDraw()}
+  if(typeof threeDraw === 'function'){threeDraw()}
+  if(typeof backDraw === 'function'){backDraw()}
+
 
   if (borderYes) {
     drawBorder();
@@ -854,33 +1020,42 @@ function mousePosition(){
 }
 
 function changePixelDensity(num){
-  [cover, one, two, three, back].map(el => {
+  all.map(el => {
     el.pixelDensity(num)
   })
 }
 
 function calMousePos(arr){
+
   const ratioer = pWidth/aWidth
   arr.map((el, i) =>{
-    if(i===0){
-    el.mouseX = constrain((mouseX - (width / 2 - aWidth/2)) * ratioer, -20, el.width+20)}
-    else{
-      el.mouseX = constrain((mouseX - (width / 2 - aWidth)) * ratioer, -20, el.width+20)
+    if(i===0 || i===4){
+    el.mouseX = constrain((mouseX - (width / 2 - aWidth/2)) * ratioer, -20, el.width+20)
     }
-    el.mouseY = constrain((mouseY - (gap + (aHeight + gap) * i))* ratioer, -20, el.height+20)
+    else{
+    el.mouseX = constrain((mouseX - (width / 2 - aWidth)) * ratioer, -20, el.width+20)
+    }
+    el.mouseY = constrain((mouseY - (gap + (aHeight + gap) * i)) * ratioer, -20, el.height+20)
+
+    if(el.mouseX > 0 && el.mouseX < el.width && el.mouseY > 0 && el.mouseY < el.height){
+      el.mouseHere = true
+    }
   })
+
 }
 
 function changeTitle(){
-  if(typeof zine.title !== "undefined"){
-  document.querySelector("#genTitle").innerHTML = zine.title;}
-  if(typeof zine.author !== "undefined"){
-    document.querySelector("#author").innerHTML = "by "+ zine.author;
-    if(typeof zine.personalUrl !== "undefined"){
-  document.querySelector("#author").innerHTML = "by "+ "<a href="+zine.url+">"+zine.author+"</a>"}};
+  if(typeof zine !== "undefined"){
+    if(typeof zine.title !== "undefined"){
+    document.querySelector("#genTitle").innerHTML = zine.title;}
+    if(typeof zine.author !== "undefined"){
+      document.querySelector("#author").innerHTML = "by "+ zine.author;
+      if(typeof zine.personalUrl !== "undefined"){
+    document.querySelector("#author").innerHTML = "by "+ "<a href="+zine.url+">"+zine.author+"</a>"}};
 
-  if(typeof zine.description !== "undefined"){
-    document.querySelector("#des").innerHTML = "<p>"+zine.description+"</p>";
+    if(typeof zine.description !== "undefined"){
+      document.querySelector("#des").innerHTML = zine.description;
+    }
   }
 }
 
@@ -892,7 +1067,6 @@ function updateAdaptiveWidth(){
 
 function preSet() {
   resizeCanvas(windowWidth - 17, windowWidth * 3.3);
-  // clear()
   push();
   // textSize(20);
   // textFont("monospace");
@@ -916,38 +1090,47 @@ function preSet() {
 }
 
 function printSetting() {
+
+  const printRotate =  angleMode()==='degrees'? 90: HALF_PI;
+  changePixelDensity(pD);
+
+  push()
   resizeCanvas(pHeight*2, pWidth*4);
   clear();
   background(255)
   push();
-  rotate(90);
+  rotate(printRotate);
   translate(height - pWidth, -pHeight);
   image(cover, 0, 0);
   pop();
   push();
-  rotate(-90);
+  rotate(-printRotate);
   translate(-height, pHeight);
   image(one, 0, 0);
   pop();
   push();
-  rotate(-90);
+  rotate(-printRotate);
   translate(-height / 2, pHeight);
   image(two, 0, 0);
   pop();
   push();
-  rotate(90);
+  rotate(printRotate);
   translate(0, -pHeight);
   image(three, 0, 0);
   pop();
   push();
-  rotate(90);
+  rotate(printRotate);
   translate(height - pWidth * 2, -pHeight);
   image(back, 0, 0);
   pop();
+  pop()
 }
 
 function drawBorder() {
+  push();
   preSet();
+
+  // clear();
 
   image(cover, width / 2 - aWidth/2, gap, aWidth, aHeight);
   image(one, width / 2 - aWidth, gap+(aHeight + gap), aWidth*2, aHeight);
@@ -955,7 +1138,6 @@ function drawBorder() {
   image(three, width / 2 - aWidth, gap+(aHeight + gap)*3, aWidth*2, aHeight);
   image(back, width / 2 - aWidth/2, gap+(aHeight + gap)*4, aWidth, aHeight);
 
-  push();
 
   noStroke()
   fill('#ed225d')
@@ -1002,8 +1184,20 @@ function downloadPDF() {
   const imgData = canvas.toDataURL("image/jpeg", 1.0);
   const pdf = new jsPDF("p", "in", [8.5, 11]);
   pdf.addImage(imgData, "JPEG", 0, 0, 8.5, 11);
- if(typeof zine.title !=="undefined"){pdf.save(zine.title+".pdf");}
-  else{pdf.save("(gen)zine.pdf");}
+
+  let filename
+  if(typeof zine.title !=="undefined"){
+    fileName = zine.title
+  }
+  else{
+    fileName = "(gen)zine.pdf"
+  }
+
+  if (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase())) {
+    window.open(pdf.output('bloburl', { filename: fileName }))
+  } else {
+    pdf.save(fileName+".pdf")
+  }
 
   borderYes = true;
 }
@@ -1020,4 +1214,9 @@ function createRandomColor(num=0){
     return colors
   }
   return randomColor
+}
+
+function makeButton(name, func){
+  document.querySelectorAll(".desktop")[0].innerHTML += `<input type="button" value="${name}" onclick="${func}()"
+      class="button alt" />`
 }
