@@ -1,0 +1,19 @@
+{
+  "name": "p5.zine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "live-server": "^1.2.2"
+  },
+  "dependencies": {
+    "jspdf": "^2.5.2"
+  }
+}
