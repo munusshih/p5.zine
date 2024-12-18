@@ -2,7 +2,7 @@
   "name": "p5.zine",
   "version": "1.0.1",
   "description": "p5.zine is an open-sourced and friendly library for anyone curious about creative code and zine-making.",
-  "main": "main.js",
+  "main": "dist/p5.zine.js",
   "scripts": {
     "build": "node build.js",
     "publish": "npm publish --access public"
