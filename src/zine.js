@@ -1,6 +1,5 @@
 import { jsPDF } from "jspdf";
 
-
 // cleanup
 let myCanvas;
 
@@ -117,28 +116,28 @@ p5.prototype.drawZine = function () {
       width / 2 - aWidth,
       gap + (aHeight + gap),
       aWidth * 2,
-      aHeight
+      aHeight,
     );
     this.image(
       two,
       width / 2 - aWidth,
       gap + (aHeight + gap) * 2,
       aWidth * 2,
-      aHeight
+      aHeight,
     );
     this.image(
       three,
       width / 2 - aWidth,
       gap + (aHeight + gap) * 3,
       aWidth * 2,
-      aHeight
+      aHeight,
     );
     this.image(
       back,
       width / 2 - aWidth / 2,
       gap + (aHeight + gap) * 4,
       aWidth,
-      aHeight
+      aHeight,
     );
 
     this.noStroke();
@@ -151,12 +150,12 @@ p5.prototype.drawZine = function () {
     this.text(
       "threePage()",
       width / 2 - aWidth,
-      gap + (aHeight + gap) * 3 - 10
+      gap + (aHeight + gap) * 3 - 10,
     );
     this.text(
       "backPage()",
       width / 2 - aWidth / 2,
-      gap + (aHeight + gap) * 4 - 10
+      gap + (aHeight + gap) * 4 - 10,
     );
 
     this.noFill();
@@ -168,27 +167,27 @@ p5.prototype.drawZine = function () {
       width / 2 - aWidth + aWidth,
       gap + (aHeight + gap),
       aWidth,
-      aHeight
+      aHeight,
     );
     this.rect(width / 2 - aWidth, gap + (aHeight + gap) * 2, aWidth, aHeight);
     this.rect(
       width / 2 - aWidth + aWidth,
       gap + (aHeight + gap) * 2,
       aWidth,
-      aHeight
+      aHeight,
     );
     this.rect(width / 2 - aWidth, gap + (aHeight + gap) * 3, aWidth, aHeight);
     this.rect(
       width / 2 - aWidth + aWidth,
       gap + (aHeight + gap) * 3,
       aWidth,
-      aHeight
+      aHeight,
     );
     this.rect(
       width / 2 - aWidth / 2,
       gap + (aHeight + gap) * 4,
       aWidth,
-      aHeight
+      aHeight,
     );
     this.pop();
   }
@@ -209,19 +208,19 @@ p5.prototype.calculateMousePos = function () {
       el.mouseX = constrain(
         (mouseX - (width / 2 - aWidth / 2)) * ratioer,
         -20,
-        el.width + 20
+        el.width + 20,
       );
     } else {
       el.mouseX = constrain(
         (mouseX - (width / 2 - aWidth)) * ratioer,
         -20,
-        el.width + 20
+        el.width + 20,
       );
     }
     el.mouseY = constrain(
       (mouseY - (gap + (aHeight + gap) * i)) * ratioer,
       -20,
-      el.height + 20
+      el.height + 20,
     );
 
     if (
@@ -242,8 +241,9 @@ p5.prototype.changeTitle = function () {
     document.querySelector("#genTitle").innerHTML =
       window.zine?.title || "Default Title";
     document.querySelector("#author").innerHTML = window.zine?.author
-      ? `by <a href="${window.zine?.personalUrl || "#"}">${window.zine?.author
-      }</a>`
+      ? `by <a href="${window.zine?.personalUrl || "#"}">${
+          window.zine?.author
+        }</a>`
       : "by Unknown Author";
     document.querySelector("#des").innerHTML =
       window.zine?.description || "No description available.";
@@ -345,7 +345,7 @@ function downloadPDF() {
 
   if (
     /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
-      navigator.userAgent.toLowerCase()
+      navigator.userAgent.toLowerCase(),
     )
   ) {
     window.open(pdf.output("bloburl", { filename: fileName }));

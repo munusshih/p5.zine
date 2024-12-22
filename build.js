@@ -1,6 +1,6 @@
 const esbuild = require("esbuild");
 const fs = require("fs");
-const path = require('path');
+const path = require("path");
 
 // Define the banner content
 const banner = `/* ==========================================================
@@ -23,11 +23,11 @@ esbuild
     banner: {
       js: banner,
     },
-    logLevel: 'info',
+    logLevel: "info",
     color: true,
   })
   .then(() => {
-    console.log('Build successful! 🎉');
+    console.log("Build successful! 🎉");
   })
   .catch((error) => {
     console.error("❌ Build failed: ", error);

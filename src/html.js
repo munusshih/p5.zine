@@ -1,5 +1,6 @@
 // HTML-----------------------------------------
-document.addEventListener("DOMContentLoaded", function () {document.body.innerHTML += `
+document.addEventListener("DOMContentLoaded", function () {
+  document.body.innerHTML += `
 
 <base target="_blank">
 <nav>
@@ -30,4 +31,5 @@ document.addEventListener("DOMContentLoaded", function () {document.body.innerHT
     This zine is about...
   </p>
 
-</footer>`});
+</footer>`;
+});

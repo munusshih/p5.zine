@@ -5,16 +5,29 @@
   "main": "dist/p5.zine.js",
   "scripts": {
     "build": "node build.js",
-    "publish": "npm publish --access public"
+    "publish": "npm publish --access public",
+    "prepare": "husky"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "keywords": ["p5.js", "zine", "creative coding", "zine-making", "zine-coding"],
+  "keywords": [
+    "p5.js",
+    "zine",
+    "creative coding",
+    "zine-making",
+    "zine-coding"
+  ],
   "author": "Munus Shih, Tuan Huang, Iley Cao",
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "esbuild": "^0.24.0"
+    "esbuild": "^0.24.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "prettier": "3.4.2"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   },
   "dependencies": {
     "jspdf": "^2.5.2"
