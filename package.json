@@ -1,20 +1,41 @@
 {
   "name": "p5.zine",
-  "version": "1.0.1",
+  "version": "0.0.1",
   "description": "p5.zine is an open-sourced and friendly library for anyone curious about creative code and zine-making.",
-  "main": "main.js",
+  "main": "dist/p5.zine.js",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "node build.js",
     "dev": "node build.js --watch --serve --dev",
     "preview": "node build.js --serve --dev",
     "test": "node build.js && node scripts/smoke-test.js",
+    "prepublishOnly": "npm run build",
     "publish": "npm publish --access public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/munusshih/p5.zine.git"
+  },
+  "homepage": "https://github.com/munusshih/p5.zine",
+  "bugs": {
+    "url": "https://github.com/munusshih/p5.zine/issues"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "keywords": ["p5.js", "zine", "creative coding", "zine-making", "zine-coding"],
+  "keywords": [
+    "p5.js",
+    "zine",
+    "creative coding",
+    "zine-making",
+    "zine-coding"
+  ],
   "author": "Munus Shih, Tuan Huang, Iley Cao",
+  "sideEffects": true,
   "license": "GPL-3.0-only",
   "devDependencies": {
     "esbuild": "^0.24.0"

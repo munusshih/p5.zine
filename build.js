@@ -4,7 +4,7 @@ const esbuild = require("esbuild");
 const banner = `/* ==========================================================
  *
  * p5.zine
- * Copyright (c) 2024 Munus Shih, Tuan Huang, Iley Cao
+ * Copyright (c) 2026 Munus Shih, Tuan Huang, Iley Cao
  *
  * Licensed under GNU General Public License.
  * https://www.gnu.org/licenses
@@ -61,7 +61,7 @@ async function run() {
     });
 
     console.log(
-      `Serving on http://${server.host}:${server.port} (open /test/index.html or /test/index.legacy.html)`
+      `Serving on http://${server.host}:${server.port} (open /test/index.html or /test/index.legacy.html)`,
     );
   }
 

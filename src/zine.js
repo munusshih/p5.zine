@@ -1,4 +1,5 @@
 import { jsPDF } from "jspdf";
+import { resolvePageDimensions } from "./page-size.js";
 
 const PAGE_DEFS = [
   { key: "cover", label: "cover", pageSize: "single", widthMultiplier: 1 },
@@ -63,8 +64,10 @@ class ZineManager {
     this.maxSinglePageWidth = DEFAULTS.maxSinglePageWidth;
     this.rWidth = DEFAULTS.rWidth;
     this.rHeight = DEFAULTS.rHeight;
+    this.pageRatio = this.rWidth / this.rHeight;
     this.pWidth = DEFAULTS.pWidth;
-    this.pHeight = (this.pWidth / this.rWidth) * this.rHeight;
+    this.pHeight = this.pWidth / this.pageRatio;
+    this.pageDPI = 96;
 
     this.aWidth = 0;
     this.aHeight = 0;
@@ -88,6 +91,7 @@ class ZineManager {
     this.createPages();
     this.applyCoreSettings();
     this.updateTitle();
+    this.updateDownloadLabels();
     this.initCapture();
 
     if (this.previewMode === PREVIEW_MODES.CANVAS) {
@@ -113,6 +117,21 @@ class ZineManager {
         typeof window.zine.pixelDensity !== "undefined"
           ? window.zine.pixelDensity
           : this.pixelDensity;
+    }
+
+    const { width, height, dpi } = resolvePageDimensions(window.zine || {}, {
+      width: this.pWidth,
+      height: this.pHeight,
+      ratio: this.pageRatio,
+    });
+
+    if (typeof width === "number" && typeof height === "number") {
+      this.pWidth = width;
+      this.pHeight = height;
+      this.pageRatio = width / height;
+    }
+    if (typeof dpi === "number") {
+      this.pageDPI = dpi;
     }
 
     const previewMode = window.zine?.preview;
@@ -304,7 +323,7 @@ class ZineManager {
     }
 
     this.aWidth = Math.min((this.p.width / 2) * 0.7, this.maxSinglePageWidth);
-    this.aHeight = (this.aWidth / this.rWidth) * this.rHeight;
+    this.aHeight = this.pageRatio ? this.aWidth / this.pageRatio : this.aWidth;
     this.gap = this.aWidth / 4;
   }
 
@@ -349,6 +368,20 @@ class ZineManager {
           window.zine?.description || "No description available.";
       }
     }
+  }
+
+  updateDownloadLabels() {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    const downloadButton = document.getElementById("download-jpg");
+    if (!downloadButton) {
+      return;
+    }
+
+    const extension = this.downloadFormat === "png" ? "png" : "jpg";
+    downloadButton.value = `*download .${extension}*`;
   }
 
   initCapture() {
@@ -710,8 +743,19 @@ class ZineManager {
       }
 
       const imgData = canvasEl.toDataURL("image/jpeg", 1.0);
-      const pdf = new jsPDF("p", "in", [8.5, 11]);
-      pdf.addImage(imgData, "JPEG", 0, 0, 8.5, 11);
+      const paperWidthPx = this.pHeight * 2;
+      const paperHeightPx = this.pWidth * 4;
+      const dpi = this.pageDPI || 96;
+      const paperWidthIn = paperWidthPx / dpi;
+      const paperHeightIn = paperHeightPx / dpi;
+      const orientation = paperWidthIn > paperHeightIn ? "l" : "p";
+
+      const pdf = new jsPDF({
+        orientation,
+        unit: "in",
+        format: [paperWidthIn, paperHeightIn],
+      });
+      pdf.addImage(imgData, "JPEG", 0, 0, paperWidthIn, paperHeightIn);
 
       let fileName;
       if (
@@ -790,6 +834,78 @@ export function zineAddon(p5, fn, lifecycles) {
       return;
     }
     instance._zine.setPagesPixelDensity(num);
+  };
+
+  fn.zinePageSize = function (width, height, options = {}) {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    if (this._zine) {
+      console.warn(
+        "zinePageSize() should be called before setup; reload to apply changes.",
+      );
+      return;
+    }
+
+    window.zine =
+      typeof window.zine === "object" && window.zine !== null ? window.zine : {};
+
+    if (typeof width !== "undefined") {
+      window.zine.pageWidth = width;
+    }
+    if (typeof height !== "undefined") {
+      window.zine.pageHeight = height;
+    }
+
+    delete window.zine.paperWidth;
+    delete window.zine.paperHeight;
+    delete window.zine.paperSize;
+
+    if (options && typeof options === "object") {
+      if (typeof options.dpi === "number") {
+        window.zine.pageDPI = options.dpi;
+      }
+      if (typeof options.unit === "string") {
+        window.zine.pageUnit = options.unit;
+      }
+    }
+  };
+
+  fn.zinePaperSize = function (width, height, options = {}) {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    if (this._zine) {
+      console.warn(
+        "zinePaperSize() should be called before setup; reload to apply changes.",
+      );
+      return;
+    }
+
+    window.zine =
+      typeof window.zine === "object" && window.zine !== null ? window.zine : {};
+
+    if (typeof width !== "undefined") {
+      window.zine.paperWidth = width;
+    }
+    if (typeof height !== "undefined") {
+      window.zine.paperHeight = height;
+    }
+
+    delete window.zine.pageWidth;
+    delete window.zine.pageHeight;
+    delete window.zine.pageSize;
+
+    if (options && typeof options === "object") {
+      if (typeof options.dpi === "number") {
+        window.zine.paperDPI = options.dpi;
+      }
+      if (typeof options.unit === "string") {
+        window.zine.paperUnit = options.unit;
+      }
+    }
   };
 
   fn.calMousePos = function (arr) {

@@ -1,4 +1,6 @@
-function setup() {}
+function setup() {
+  zinePaperSize("11in", "30in");
+}
 
 function draw() {
   /* Cover */
