@@ -1,0 +1,62 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Embed from "../components/Embed.astro";
+---
+
+<BaseLayout title="p5.zine Docs — Overview">
+  <header class="page-header">
+    <h1>Overview</h1>
+    <p>
+      p5.zine turns a sketch into a printable zine workflow. It gives you five
+      page canvases (cover, one, two, three, back), layout helpers, and export tools.
+    </p>
+  </header>
+
+  <section class="section">
+    <h2>What you get</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Pages, not one giant canvas</h3>
+        <p>Each page is its own p5.Graphics canvas, mounted and scaled automatically.</p>
+      </div>
+      <div class="card">
+        <h3>Print imposition</h3>
+        <p>Exports are built with the correct fold layout so PDFs print correctly.</p>
+      </div>
+      <div class="card">
+        <h3>Custom helpers</h3>
+        <p>Layout utilities are exposed on both p5 and p5.Graphics.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Try it now</h2>
+    <p>Hit Run to preview, or edit the code to make it yours.</p>
+    <Embed
+      title="Overview demo"
+      runtime="modern"
+      code={`function setup() {
+  zinePageSize("8.5in", "11in");
+}
+
+function draw() {
+  cover.background(255);
+  cover.text("p5.zine", 40, 60);
+  one.background(240);
+  if (one.mouseHere) {
+    one.circle(one.mouseX, one.mouseY, 40);
+  }
+}`}
+    />
+  </section>
+
+  <section class="section">
+    <h2>Where to go next</h2>
+    <div class="list">
+      <div class="list-item">Start with <strong>Quick start</strong> for CDN setup.</div>
+      <div class="list-item">Browse <strong>Custom functions</strong> for layout helpers.</div>
+      <div class="list-item">Read <strong>Best practices</strong> for print-friendly sketches.</div>
+    </div>
+  </section>
+</BaseLayout>

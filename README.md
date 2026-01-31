@@ -7,7 +7,7 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
 
 ## Quick start (CDN, easiest)
 
-### p5 2.x
+### p5 1.x + 2.x (global)
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2/lib/p5.min.js"></script>
@@ -26,19 +26,13 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
 </script>
 ```
 
-### p5 1.x (legacy)
-
-```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/p5.zine/dist/p5.zine.legacy.js"></script>
-```
+> Works with p5 1.x too — just swap the p5 script tag for a 1.x build.
 
 ## Table of contents
 
 - [p5.zine](#p5zine)
   - [Quick start (CDN, easiest)](#quick-start-cdn-easiest)
-    - [p5 2.x](#p5-2x)
-    - [p5 1.x (legacy)](#p5-1x-legacy)
+    - [p5 1.x + 2.x (global)](#p5-1x--2x-global)
   - [Table of contents](#table-of-contents)
   - [Bundles (p5 2.x + 1.x)](#bundles-p5-2x--1x)
   - [Local dev / preview](#local-dev--preview)
@@ -60,12 +54,10 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
 
 ## Bundles (p5 2.x + 1.x)
 
-The build outputs two bundles:
+The build outputs:
 
-- `dist/p5.zine.js` → **p5 2.x** (`p5.registerAddon`)
-- `dist/p5.zine.legacy.js` → **p5 1.x** (`p5.prototype` + `registerMethod`)
-- `dist/p5.zine.full.js` → **p5 2.x** with jsPDF bundled (offline PDF export)
-- `dist/p5.zine.legacy.full.js` → **p5 1.x** with jsPDF bundled (offline PDF export)
+- `dist/p5.zine.js` → **p5 1.x + 2.x** (window-globals)
+- `dist/p5.zine.full.js` → **p5 1.x + 2.x** with jsPDF bundled (offline PDF export)
 
 ## Local dev / preview
 
@@ -75,9 +67,9 @@ npm run dev
 
 Open:
 
-- `http://localhost:3000/test/index.html` (p5 2.x)
-- `http://localhost:3000/test/index.legacy.html` (p5 1.x)
-- `http://localhost:3000/test/compat.html` (side‑by‑side)
+- `http://localhost:3000/test/index.html` (p5 2.x + p5.zine.js)
+- `http://localhost:3000/test/index.legacy.html` (p5 1.x + p5.zine.js)
+- `http://localhost:3000/test/compat.html` (side‑by‑side 1.x vs 2.x)
 
 Other scripts:
 
@@ -107,39 +99,21 @@ Set options **before** `setup()` runs:
 window.zine = {
   title: "My Zine",
   author: "Your Name",
-  personalUrl: "https://example.com",
-  description: "Short description",
-
-  cam: true, // set false to disable webcam capture
-  frameRate: 10,
-  pixelDensity: 1,
-
   preview: "pages", // "pages" (default) or "canvas"
-
+  cam: false, // set false to disable webcam capture
   downloadFormat: "png", // "png" (default) or "jpg"
-  downloadBackground: "#ffffff", // default white; use "transparent" for none
-
-  mouseClamp: true, // keep mouse within each page
-  mousePadding: 0, // when mouseClamp is false, allow extra padding
-
-  // page size (single page)
-  pageWidth: "8.5in",
-  pageHeight: "11in",
-  // or pageSize: { width: "8.5in", height: "11in" }
-
-  // paper size (imposition)
-  // paperWidth: "11in",
-  // paperHeight: "17in",
-  // or paperSize: { width: "11in", height: "17in" }
-
-  // DPI + units (used for inches/cm/mm/pt conversions)
-  pageDPI: 96,
-  pageUnit: "in",
-
-  // Optional: override the jsPDF CDN used for PDF export
-  // pdfCdn: "https://cdn.jsdelivr.net/npm/jspdf@2/dist/jspdf.umd.min.js"
 };
 ```
+
+Other optional settings:
+
+- `description`, `personalUrl`
+- `frameRate`, `pixelDensity`
+- `downloadBackground` (set `"transparent"` for PNG)
+- `mouseClamp`, `mousePadding`
+- `pdfCdn` (override jsPDF CDN for PDF export)
+
+Sizing is configured via `zinePageSize` / `zinePaperSize` (below).
 
 ## Preview modes
 
@@ -183,7 +157,7 @@ function setup() {
 
 If you call both helpers, **the last call wins**.
 
-Supported units: `px`, `in`, `cm`, `mm`, `pt`. If you pass a number (or unitless string), it’s treated as pixels unless you set `pageUnit`.
+Supported units: `px`, `in`, `cm`, `mm`, `pt`. If you pass a number (or unitless string), it’s treated as pixels.
 
 ## Export
 
@@ -193,12 +167,12 @@ The “download” button exports each page as an image. The extension matches `
 
 ### PDF
 
-PDFs are generated using the imposition layout. The PDF page size is derived from your
-`pageDPI` / `paperDPI` so the PDF matches the paper dimensions instead of forcing Letter.
+PDFs are generated using the imposition layout. The PDF page size is derived from the
+`dpi` you pass to `zinePageSize` / `zinePaperSize`, so the PDF matches the paper dimensions.
 
 For smaller bundle sizes, jsPDF is **lazy‑loaded** from a CDN when you click “download .pdf”.
 If you’re offline or want to self‑host, include jsPDF yourself or set `window.zine.pdfCdn`.
-You can also use the **full** bundles (`p5.zine.full.js`, `p5.zine.legacy.full.js`) which include jsPDF.
+You can also use the **full** bundle (`p5.zine.full.js`) which includes jsPDF.
 
 ## Custom helpers (custom.js)
 
@@ -224,54 +198,30 @@ If you omit the version, CDN will serve the latest tag (which can include breaki
 
 ### UMD via jsDelivr
 
-**p5 2.x (modern):**
+**Global (p5 1.x + 2.x):**
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5.zine"></script>
 ```
 
-**p5 1.x (legacy):**
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/p5.zine/dist/p5.zine.legacy.js"></script>
-```
-
-**p5 2.x (modern, full):**
+**Global + jsPDF bundled:**
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5.zine/dist/p5.zine.full.js"></script>
 ```
 
-**p5 1.x (legacy, full):**
-
-```html
-<script src="https://cdn.jsdelivr.net/npm/p5.zine/dist/p5.zine.legacy.full.js"></script>
-```
-
 ### UMD via UNPKG
 
-**p5 2.x (modern):**
+**Global (p5 1.x + 2.x):**
 
 ```html
 <script src="https://unpkg.com/p5.zine/dist/p5.zine.js"></script>
 ```
 
-**p5 1.x (legacy):**
-
-```html
-<script src="https://unpkg.com/p5.zine/dist/p5.zine.legacy.js"></script>
-```
-
-**p5 2.x (modern, full):**
+**Global + jsPDF bundled:**
 
 ```html
 <script src="https://unpkg.com/p5.zine/dist/p5.zine.full.js"></script>
-```
-
-**p5 1.x (legacy, full):**
-
-```html
-<script src="https://unpkg.com/p5.zine/dist/p5.zine.legacy.full.js"></script>
 ```
 
 ## Architecture (1.x + 2.x addons)
@@ -283,13 +233,12 @@ Core addon logic lives in:
 
 Adapters bridge to each runtime:
 
-- `src/adapters/p5-2.js` → uses `p5.registerAddon(...)` (p5 2.x)
-- `src/adapters/p5-1.js` → patches `p5.prototype` and maps lifecycles to `registerMethod(...)` (p5 1.x)
+- `src/adapters/p5-universal.js` → **p5 1.x + 2.x** (window-globals)
 
 Entry points:
 
-- `src/index.modern.js` → modern bundle
-- `src/index.legacy.js` → legacy bundle
+- `src/index.js` → global bundle
+- `src/index.full.js` → global bundle with jsPDF
 
 ## Internal defaults
 

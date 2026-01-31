@@ -1,0 +1,23 @@
+---
+const nav = [
+  { href: "/", label: "Overview" },
+  { href: "/quick-start", label: "Quick start" },
+  { href: "/custom-functions", label: "Custom functions" },
+  { href: "/best-practices", label: "Best practices" },
+  { href: "/examples", label: "Examples" },
+  { href: "/advanced", label: "Advanced" },
+];
+const note =
+  Astro.props.note ||
+  "Browser-first zine toolkit. Use p5.zine.js for 1.x + 2.x globals.";
+---
+
+<aside class="sidebar">
+  <div class="brand">p5.zine docs</div>
+  <nav class="nav">
+    {nav.map((item) => (
+      <a href={item.href}>{item.label}</a>
+    ))}
+  </nav>
+  <div class="sidebar-note">{note}</div>
+</aside>

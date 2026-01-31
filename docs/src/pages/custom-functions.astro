@@ -1,0 +1,68 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Embed from "../components/Embed.astro";
+import functions from "../data/custom-functions.json";
+---
+
+<BaseLayout title="p5.zine Docs — Custom functions" note="Auto-generated from frontmatter in src/custom.">
+  <header class="page-header">
+    <h1>Custom functions</h1>
+    <p>These helpers are attached to both p5 and p5.Graphics.</p>
+  </header>
+
+  <section class="section">
+    <h2>Try a helper</h2>
+    <Embed
+      title="Custom helper"
+      runtime="modern"
+      code={`function setup() {
+  zinePageSize("8.5in", "11in");
+}
+
+function draw() {
+  cover.background(255);
+  cover.randomLayout(["ZINE", "ZINE"], 7, 5, 10, true);
+}`}
+    />
+  </section>
+
+  <section class="section">
+    <h2>How to make custom functions</h2>
+    <p>Add new helpers by creating a file in <code>src/custom/</code> with frontmatter.</p>
+    <div class="callout">
+      <strong>Workflow</strong><br />
+      1) Create a new file in <code>src/custom</code><br />
+      2) Add frontmatter (name, summary, params, example)<br />
+      3) Export <code>meta</code> and <code>method</code><br />
+      4) Import it in <code>src/custom.js</code>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Available helpers</h2>
+    <div class="card-grid">
+      {functions.map((fn) => (
+        <div class="card">
+          <h3>{fn.name || fn.slug}</h3>
+          <p>{fn.summary}</p>
+          {fn.params?.length ? <span class="badge">Parameters</span> : null}
+          {fn.params?.length ? (
+            <div class="list" style="margin-top: 12px;">
+              {fn.params.map((param) => (
+                <div class="list-item">
+                  <strong>{param.name || "param"}</strong>
+                  {param.optional ? " (optional)" : ""}
+                  <br />
+                  <span>{param.type}</span>
+                  <br />
+                  <span>{param.description}</span>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          {fn.example ? <pre>{fn.example}</pre> : null}
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

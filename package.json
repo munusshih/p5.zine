@@ -13,6 +13,8 @@
   ],
   "scripts": {
     "build": "node build.js",
+    "docs:build": "node scripts/build-docs.js && npm --prefix docs run build",
+    "docs:dev": "node scripts/build-docs.js && npm --prefix docs run dev",
     "dev": "node build.js --watch --serve --dev",
     "preview": "node build.js --serve --dev",
     "test": "node build.js && node scripts/smoke-test.js",

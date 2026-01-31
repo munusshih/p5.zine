@@ -26,7 +26,7 @@ export function parseDimension(value, options = {}) {
   }
 
   const dpi = typeof options.dpi === "number" ? options.dpi : 96;
-  const defaultUnit = options.defaultUnit || null;
+  const defaultUnit = null;
 
   if (typeof value === "number") {
     if (defaultUnit && UNIT_TO_INCH[defaultUnit]) {
@@ -62,14 +62,7 @@ export function resolvePageDimensions(config = {}, defaults = {}) {
         : typeof config.dpi === "number"
           ? config.dpi
           : 96;
-  const defaultUnit =
-    typeof config.pageUnit === "string"
-      ? config.pageUnit
-      : typeof config.paperUnit === "string"
-        ? config.paperUnit
-        : typeof config.unit === "string"
-          ? config.unit
-          : null;
+  const defaultUnit = null;
 
   let width = null;
   let height = null;

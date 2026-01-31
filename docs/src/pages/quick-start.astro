@@ -1,0 +1,50 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Embed from "../components/Embed.astro";
+---
+
+<BaseLayout title="p5.zine Docs — Quick start" note="p5.zine.js works in p5 1.x + 2.x with globals.">
+  <header class="page-header">
+    <h1>Quick start</h1>
+    <p>Load p5 and p5.zine from CDN, then draw on your pages.</p>
+  </header>
+
+  <section class="section">
+    <h2>Step 1 — Include the scripts</h2>
+    <div class="callout">
+      <strong>Global (p5 1.x + 2.x)</strong><br />
+      <code>&lt;script src="https://cdn.jsdelivr.net/npm/p5@2/lib/p5.min.js"&gt;&lt;/script&gt;</code><br />
+      <code>&lt;script src="https://cdn.jsdelivr.net/npm/p5.zine"&gt;&lt;/script&gt;</code><br />
+      <span>Swap the p5 script tag for a 1.x build if needed.</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Step 2 — Use the page canvases</h2>
+    <p>Draw on <code>cover</code>, <code>one</code>, <code>two</code>, <code>three</code>, and <code>back</code>.</p>
+    <Embed
+      title="Quick start"
+      runtime="modern"
+      code={`function setup() {
+  zinePageSize("8.5in", "11in");
+}
+
+function draw() {
+  cover.background(255);
+  cover.text("Cover page", 30, 50);
+
+  one.background(240);
+  one.text("Page one", 30, 50);
+}`}
+    />
+  </section>
+
+  <section class="section">
+    <h2>Step 3 — Export</h2>
+    <p>Use the on-page UI buttons to download JPG/PNG or PDF imposition.</p>
+    <div class="list">
+      <div class="list-item">Use <strong>download .png</strong> for transparent exports.</div>
+      <div class="list-item">Use <strong>download .pdf</strong> for print-ready output.</div>
+    </div>
+  </section>
+</BaseLayout>

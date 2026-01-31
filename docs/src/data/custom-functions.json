@@ -1,0 +1,401 @@
+[
+  {
+    "file": "Background.js",
+    "slug": "Background",
+    "name": "Background",
+    "summary": "Set a background color with RGB values or CSS rgb() string.",
+    "params": [
+      {
+        "name": "r",
+        "type": "number|string",
+        "description": "Red value or CSS color string."
+      },
+      {
+        "name": "g",
+        "type": "number",
+        "optional": true,
+        "description": "Green value (if using RGB)."
+      },
+      {
+        "name": "b",
+        "type": "number",
+        "optional": true,
+        "description": "Blue value (if using RGB)."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.Background(255);\ncover.Background(\"rgb(255, 0, 0)\");"
+  },
+  {
+    "file": "fullPage.js",
+    "slug": "fullPage",
+    "name": "fullPage",
+    "summary": "Draw text or an image to fill the full page.",
+    "params": [
+      {
+        "name": "material",
+        "type": "string|p5.Image|p5.Graphics",
+        "description": "Text or image to draw."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.fullPage(\"hello\");"
+  },
+  {
+    "file": "glitchLayout.js",
+    "slug": "glitchLayout",
+    "name": "glitchLayout",
+    "summary": "Create a glitchy sine-wave layout of words or images.",
+    "params": [
+      {
+        "name": "word",
+        "type": "Array<string|p5.Image|p5.Graphics>",
+        "optional": true,
+        "description": "Items to draw."
+      },
+      {
+        "name": "sizer",
+        "type": "number",
+        "optional": true,
+        "description": "Base size multiplier."
+      },
+      {
+        "name": "numMax",
+        "type": "number",
+        "optional": true,
+        "description": "Max repeats per item."
+      },
+      {
+        "name": "repeat",
+        "type": "number",
+        "optional": true,
+        "description": "Number of passes."
+      },
+      {
+        "name": "fun",
+        "type": "boolean",
+        "optional": true,
+        "description": "Use larger wave values."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.glitchLayout([\"GLITCH\"], 7, 5, 20, true);"
+  },
+  {
+    "file": "gridLayout.js",
+    "slug": "gridLayout",
+    "name": "gridLayout",
+    "summary": "Arrange words or images in a grid layout.",
+    "params": [
+      {
+        "name": "word",
+        "type": "Array<string|p5.Image|p5.Graphics>",
+        "optional": true,
+        "description": "Items to draw."
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "optional": true,
+        "description": "Base size multiplier."
+      },
+      {
+        "name": "columnNum",
+        "type": "number",
+        "optional": true,
+        "description": "Number of columns."
+      },
+      {
+        "name": "repeat",
+        "type": "number",
+        "optional": true,
+        "description": "Number of passes."
+      },
+      {
+        "name": "fun",
+        "type": "boolean",
+        "optional": true,
+        "description": "Randomize row count per pass."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.gridLayout([\"A\", \"B\", \"C\"], 7, 5, 12, false);"
+  },
+  {
+    "file": "leftBackground.js",
+    "slug": "leftBackground",
+    "name": "leftBackground",
+    "summary": "Fill the left half of the page with a color.",
+    "params": [
+      {
+        "name": "r",
+        "type": "number|string",
+        "description": "Red value or CSS color string."
+      },
+      {
+        "name": "g",
+        "type": "number",
+        "optional": true,
+        "description": "Green value (if using RGB)."
+      },
+      {
+        "name": "b",
+        "type": "number",
+        "optional": true,
+        "description": "Blue value (if using RGB)."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.leftBackground(\"#ffcc00\");"
+  },
+  {
+    "file": "leftPage.js",
+    "slug": "leftPage",
+    "name": "leftPage",
+    "summary": "Draw text or an image on the left half of the page.",
+    "params": [
+      {
+        "name": "material",
+        "type": "string|p5.Image|p5.Graphics",
+        "description": "Text or image to draw."
+      },
+      {
+        "name": "offsetX",
+        "type": "number",
+        "optional": true,
+        "description": "X offset before drawing."
+      },
+      {
+        "name": "offsetY",
+        "type": "number",
+        "optional": true,
+        "description": "Y offset before drawing."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.leftPage(\"left text\", 10, 20);"
+  },
+  {
+    "file": "randomLayout.js",
+    "slug": "randomLayout",
+    "name": "randomLayout",
+    "summary": "Scatter words or images randomly across the page.",
+    "params": [
+      {
+        "name": "word",
+        "type": "Array<string|p5.Image|p5.Graphics>",
+        "optional": true,
+        "description": "Items to draw."
+      },
+      {
+        "name": "size",
+        "type": "number",
+        "optional": true,
+        "description": "Base size multiplier."
+      },
+      {
+        "name": "num",
+        "type": "number",
+        "optional": true,
+        "description": "Range multiplier for scatter."
+      },
+      {
+        "name": "repeat",
+        "type": "number",
+        "optional": true,
+        "description": "Number of passes."
+      },
+      {
+        "name": "fun",
+        "type": "boolean",
+        "optional": true,
+        "description": "Randomize text sizes."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.randomLayout([\"ZINE\", \"ZINE\"], 7, 5, 10, true);"
+  },
+  {
+    "file": "rightBackground.js",
+    "slug": "rightBackground",
+    "name": "rightBackground",
+    "summary": "Fill the right half of the page with a color.",
+    "params": [
+      {
+        "name": "r",
+        "type": "number|string",
+        "description": "Red value or CSS color string."
+      },
+      {
+        "name": "g",
+        "type": "number",
+        "optional": true,
+        "description": "Green value (if using RGB)."
+      },
+      {
+        "name": "b",
+        "type": "number",
+        "optional": true,
+        "description": "Blue value (if using RGB)."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.rightBackground(\"#00ccff\");"
+  },
+  {
+    "file": "rightCamera.js",
+    "slug": "rightCamera",
+    "name": "rightCamera",
+    "summary": "Draw the global capture feed fitted to the page width.",
+    "returns": "void",
+    "notes": "Requires a global `capture` video (p5.createCapture()).",
+    "example": "cover.rightCamera();"
+  },
+  {
+    "file": "rightPage.js",
+    "slug": "rightPage",
+    "name": "rightPage",
+    "summary": "Draw text or an image on the right half of the page.",
+    "params": [
+      {
+        "name": "material",
+        "type": "string|p5.Image|p5.Graphics",
+        "description": "Text or image to draw."
+      },
+      {
+        "name": "offsetX",
+        "type": "number",
+        "optional": true,
+        "description": "X offset before drawing."
+      },
+      {
+        "name": "offsetY",
+        "type": "number",
+        "optional": true,
+        "description": "Y offset before drawing."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.rightPage(\"right text\", 10, 20);"
+  },
+  {
+    "file": "selfieBackground.js",
+    "slug": "selfieBackground",
+    "name": "selfieBackground",
+    "summary": "Draw the global selfie image mirrored across the canvas.",
+    "params": [
+      {
+        "name": "r",
+        "type": "number",
+        "optional": true,
+        "description": "Optional tint red channel."
+      },
+      {
+        "name": "g",
+        "type": "number",
+        "optional": true,
+        "description": "Optional tint green channel."
+      },
+      {
+        "name": "b",
+        "type": "number",
+        "optional": true,
+        "description": "Optional tint blue channel."
+      }
+    ],
+    "returns": "void",
+    "notes": "Requires a global `selfie` image (set by the zine camera flow).",
+    "example": "cover.selfieBackground();\ncover.selfieBackground(255, 200, 200);"
+  },
+  {
+    "file": "textBox.js",
+    "slug": "textBox",
+    "name": "textBox",
+    "summary": "Flow multiline text into columns within a bounding box.",
+    "params": [
+      {
+        "name": "inputText",
+        "type": "string",
+        "description": "Text to layout."
+      },
+      {
+        "name": "startX",
+        "type": "number",
+        "optional": true,
+        "description": "Box start X."
+      },
+      {
+        "name": "startY",
+        "type": "number",
+        "optional": true,
+        "description": "Box start Y."
+      },
+      {
+        "name": "boxWidth",
+        "type": "number",
+        "optional": true,
+        "description": "Column width."
+      },
+      {
+        "name": "boxHeight",
+        "type": "number",
+        "optional": true,
+        "description": "Column height."
+      },
+      {
+        "name": "gapX",
+        "type": "number",
+        "optional": true,
+        "description": "Gap between columns."
+      },
+      {
+        "name": "showBox",
+        "type": "boolean",
+        "optional": true,
+        "description": "Draw outline boxes."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.textBox(\"hello world\", 20, 30, 200, 300, 20, true);"
+  },
+  {
+    "file": "textSet.js",
+    "slug": "textSet",
+    "name": "textSet",
+    "summary": "Set font, size, alignment, leading, and optional fill color.",
+    "params": [
+      {
+        "name": "theFont",
+        "type": "string",
+        "optional": true,
+        "description": "Font name."
+      },
+      {
+        "name": "theSize",
+        "type": "number",
+        "optional": true,
+        "description": "Font size."
+      },
+      {
+        "name": "theAlign",
+        "type": "number",
+        "optional": true,
+        "description": "p5 text alignment constant (LEFT, CENTER, RIGHT)."
+      },
+      {
+        "name": "theLead",
+        "type": "number",
+        "optional": true,
+        "description": "Line height."
+      },
+      {
+        "name": "theColor",
+        "type": "any",
+        "optional": true,
+        "description": "Fill color."
+      }
+    ],
+    "returns": "void",
+    "example": "cover.textSet(\"Averia Libre\", 24, CENTER, 26, \"#111\");"
+  }
+]

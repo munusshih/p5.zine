@@ -1,0 +1,54 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Embed from "../components/Embed.astro";
+---
+
+<BaseLayout title="p5.zine Docs — Advanced" note="For power users.">
+  <header class="page-header">
+    <h1>Advanced techniques</h1>
+    <p>Push p5.zine for higher-res output and print control.</p>
+  </header>
+
+  <section class="section">
+    <h2>Paper imposition workflow</h2>
+    <p>Use <code>zinePaperSize</code> to define the full print sheet and derive pages.</p>
+    <Embed
+      title="Paper sizing"
+      runtime="modern"
+      code={`function setup() {
+  zinePaperSize("11in", "17in", { dpi: 300 });
+}
+
+function draw() {
+  cover.background(255);
+  cover.text("Imposition ready", 40, 60);
+}`}
+    />
+  </section>
+
+  <section class="section">
+    <h2>Performance tuning</h2>
+    <div class="list">
+      <div class="list-item">Keep <strong>pixelDensity</strong> low for previews.</div>
+      <div class="list-item">Raise <strong>pageDPI</strong> only during export.</div>
+      <div class="list-item">Prefer the <strong>full bundle</strong> if you need offline PDF.</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>p5 1.x compatibility</h2>
+    <p>Test with p5 1.x using p5.zine.js (global).</p>
+    <Embed
+      title="Legacy runtime"
+      runtime="legacy"
+      code={`function setup() {
+  zinePageSize("8.5in", "11in");
+}
+
+function draw() {
+  cover.background("#fef9c3");
+  cover.text("Legacy mode", 40, 60);
+}`}
+    />
+  </section>
+</BaseLayout>

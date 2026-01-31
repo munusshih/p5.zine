@@ -1,0 +1,63 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Embed from "../components/Embed.astro";
+---
+
+<BaseLayout title="p5.zine Docs — Examples" note="Getting to know the zine pages.">
+  <header class="page-header">
+    <h1>Examples</h1>
+    <p>See how each page canvas can behave differently.</p>
+  </header>
+
+  <section class="section">
+    <h2>Split spread</h2>
+    <Embed
+      title="Split spread"
+      runtime="modern"
+      code={`function setup() {
+  zinePageSize("8.5in", "11in");
+}
+
+function draw() {
+  one.leftBackground("#a7f3d0");
+  one.rightBackground("#bfdbfe");
+  one.text("Spread", 40, 60);
+}`}
+    />
+  </section>
+
+  <section class="section">
+    <h2>Typographic poster</h2>
+    <Embed
+      title="Typography"
+      runtime="modern"
+      code={`function setup() {
+  zinePageSize("8.5in", "11in");
+}
+
+function draw() {
+  cover.background("#0f172a");
+  cover.textSet("Averia Libre", 48, LEFT, 52, "#f8fafc");
+  cover.text("ZINE NIGHT", 40, 80);
+}`}
+    />
+  </section>
+
+  <section class="section">
+    <h2>Interactive doodle</h2>
+    <Embed
+      title="Mouse doodle"
+      runtime="modern"
+      code={`function setup() {
+  zinePageSize("8.5in", "11in");
+}
+
+function draw() {
+  three.background(250);
+  if (three.mouseHere) {
+    three.circle(three.mouseX, three.mouseY, 30);
+  }
+}`}
+    />
+  </section>
+</BaseLayout>

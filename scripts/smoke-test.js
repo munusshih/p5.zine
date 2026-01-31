@@ -5,8 +5,6 @@ const assert = require("assert");
 const root = path.resolve(__dirname, "..");
 const distModern = path.join(root, "dist", "p5.zine.js");
 const distModernFull = path.join(root, "dist", "p5.zine.full.js");
-const distLegacy = path.join(root, "dist", "p5.zine.legacy.js");
-const distLegacyFull = path.join(root, "dist", "p5.zine.legacy.full.js");
 const testModern = path.join(root, "test", "index.html");
 const testLegacy = path.join(root, "test", "index.legacy.html");
 
@@ -21,22 +19,13 @@ function fileExists(filePath) {
 
 assert.ok(fileExists(distModern), "dist/p5.zine.js does not exist. Run npm run build first.");
 assert.ok(fileExists(distModernFull), "dist/p5.zine.full.js does not exist. Run npm run build first.");
-assert.ok(fileExists(distLegacy), "dist/p5.zine.legacy.js does not exist. Run npm run build first.");
-assert.ok(fileExists(distLegacyFull), "dist/p5.zine.legacy.full.js does not exist. Run npm run build first.");
-
 const modernStat = fs.statSync(distModern);
 const modernFullStat = fs.statSync(distModernFull);
-const legacyStat = fs.statSync(distLegacy);
-const legacyFullStat = fs.statSync(distLegacyFull);
 assert.ok(modernStat.size > 0, "dist/p5.zine.js is empty.");
 assert.ok(modernFullStat.size > 0, "dist/p5.zine.full.js is empty.");
-assert.ok(legacyStat.size > 0, "dist/p5.zine.legacy.js is empty.");
-assert.ok(legacyFullStat.size > 0, "dist/p5.zine.legacy.full.js is empty.");
 
 const modernContent = fs.readFileSync(distModern, "utf8");
 const modernFullContent = fs.readFileSync(distModernFull, "utf8");
-const legacyContent = fs.readFileSync(distLegacy, "utf8");
-const legacyFullContent = fs.readFileSync(distLegacyFull, "utf8");
 assert.ok(
   modernContent.includes("p5.zine"),
   "dist/p5.zine.js does not include expected library banner/string."
@@ -45,15 +34,6 @@ assert.ok(
   modernFullContent.includes("p5.zine"),
   "dist/p5.zine.full.js does not include expected library banner/string."
 );
-assert.ok(
-  legacyContent.includes("p5.zine"),
-  "dist/p5.zine.legacy.js does not include expected library banner/string."
-);
-assert.ok(
-  legacyFullContent.includes("p5.zine"),
-  "dist/p5.zine.legacy.full.js does not include expected library banner/string."
-);
-
 assert.ok(fileExists(testModern), "test/index.html is missing.");
 assert.ok(fileExists(testLegacy), "test/index.legacy.html is missing.");
 
@@ -64,8 +44,8 @@ assert.ok(
   "test/index.html does not reference ../dist/p5.zine.js."
 );
 assert.ok(
-  testLegacyHtml.includes("../dist/p5.zine.legacy.js"),
-  "test/index.legacy.html does not reference ../dist/p5.zine.legacy.js."
+  testLegacyHtml.includes("../dist/p5.zine.js"),
+  "test/index.legacy.html does not reference ../dist/p5.zine.js."
 );
 
 console.log("Smoke test passed ✅");

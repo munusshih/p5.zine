@@ -938,9 +938,6 @@ export function zineAddon(p5, fn, lifecycles) {
       if (typeof options.dpi === "number") {
         window.zine.pageDPI = options.dpi;
       }
-      if (typeof options.unit === "string") {
-        window.zine.pageUnit = options.unit;
-      }
     }
   };
 
@@ -973,9 +970,6 @@ export function zineAddon(p5, fn, lifecycles) {
     if (options && typeof options === "object") {
       if (typeof options.dpi === "number") {
         window.zine.paperDPI = options.dpi;
-      }
-      if (typeof options.unit === "string") {
-        window.zine.paperUnit = options.unit;
       }
     }
   };

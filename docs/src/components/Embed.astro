@@ -1,0 +1,7 @@
+---
+const { title = "Live editor", runtime = "modern", code = "" } = Astro.props;
+---
+
+<div class="embed" data-title={title} data-runtime={runtime}>
+  <textarea>{code}</textarea>
+</div>

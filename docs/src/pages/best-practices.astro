@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Embed from "../components/Embed.astro";
+---
+
+<BaseLayout title="p5.zine Docs — Best practices" note="Tips for print-ready output.">
+  <header class="page-header">
+    <h1>Best practices</h1>
+    <p>Keep your pages consistent, legible, and export-friendly.</p>
+  </header>
+
+  <section class="section">
+    <h2>Recommended defaults</h2>
+    <div class="list">
+      <div class="list-item">Use <strong>zinePageSize</strong> for consistent page sizing.</div>
+      <div class="list-item">Set <strong>pageDPI</strong> to match print quality (96–300).</div>
+      <div class="list-item">Keep <strong>pixelDensity</strong> low for preview performance.</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Live example</h2>
+    <Embed
+      title="Best practice demo"
+      runtime="modern"
+      code={`function setup() {
+  zinePageSize("8.5in", "11in", { dpi: 150 });
+  window.zine = { downloadFormat: "png" };
+}
+
+function draw() {
+  cover.background("#fef3c7");
+  cover.textSet("Averia Libre", 24, LEFT, 28, "#111");
+  cover.text("Print-friendly typography", 30, 60);
+}`}
+    />
+  </section>
+
+  <section class="section">
+    <h2>Design checklist</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>Margins</h3>
+        <p>Leave 0.25–0.5 inch of safe margin around text.</p>
+      </div>
+      <div class="card">
+        <h3>Contrast</h3>
+        <p>Check text legibility on printed paper, not just screen.</p>
+      </div>
+      <div class="card">
+        <h3>Consistency</h3>
+        <p>Use shared grid and typography settings per zine.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
