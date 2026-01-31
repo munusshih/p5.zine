@@ -1,4 +1,3 @@
-import { jsPDF } from "jspdf";
 import { resolvePageDimensions } from "./page-size.js";
 
 const PAGE_DEFS = [
@@ -24,6 +23,71 @@ const PREVIEW_MODES = {
 };
 
 let activeZine = null;
+let jsPdfLoadPromise = null;
+
+function resolveJsPdfGlobal() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  if (window.jspdf && window.jspdf.jsPDF) {
+    return window.jspdf.jsPDF;
+  }
+  if (window.jsPDF) {
+    return window.jsPDF;
+  }
+  return null;
+}
+
+function getPdfCdnUrl() {
+  if (
+    typeof window !== "undefined" &&
+    typeof window.zine === "object" &&
+    window.zine !== null &&
+    typeof window.zine.pdfCdn === "string" &&
+    window.zine.pdfCdn.trim().length > 0
+  ) {
+    return window.zine.pdfCdn.trim();
+  }
+  return "https://cdn.jsdelivr.net/npm/jspdf@2/dist/jspdf.umd.min.js";
+}
+
+function loadJsPdf() {
+  const existing = resolveJsPdfGlobal();
+  if (existing) {
+    return Promise.resolve(existing);
+  }
+
+  if (jsPdfLoadPromise) {
+    return jsPdfLoadPromise;
+  }
+
+  jsPdfLoadPromise = new Promise((resolve, reject) => {
+    if (typeof document === "undefined") {
+      reject(new Error("jsPDF can only be loaded in a browser environment."));
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = getPdfCdnUrl();
+    script.async = true;
+    script.dataset.zineJspdf = "true";
+    script.onload = () => {
+      const loaded = resolveJsPdfGlobal();
+      if (loaded) {
+        resolve(loaded);
+      } else {
+        reject(new Error("jsPDF loaded but was not found on window."));
+      }
+    };
+    script.onerror = () => {
+      reject(new Error("Failed to load jsPDF from CDN."));
+    };
+
+    document.head.appendChild(script);
+  });
+
+  return jsPdfLoadPromise;
+}
 
 function resolveP5Instance(candidate) {
   if (typeof window !== "undefined" && candidate === window) {
@@ -729,11 +793,17 @@ class ZineManager {
     this.setPreviewChromeVisible(true);
   }
 
-  downloadPDF() {
+  async downloadPDF() {
     this.borderYes = false;
     this.setPreviewChromeVisible(false);
 
     try {
+      const jsPDF = resolveJsPdfGlobal() || (await loadJsPdf());
+      if (!jsPDF) {
+        console.warn("jsPDF is not available; PDF export cancelled.");
+        return;
+      }
+
       const printGraphics = this.buildPrintGraphics();
       const canvasEl =
         printGraphics?.canvas || printGraphics?.elt || printGraphics;
@@ -782,6 +852,8 @@ class ZineManager {
       if (typeof printGraphics?.remove === "function") {
         printGraphics.remove();
       }
+    } catch (error) {
+      console.error("PDF export failed:", error);
     } finally {
       this.borderYes = true;
       this.setPreviewChromeVisible(true);

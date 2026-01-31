@@ -1,6 +1,6 @@
 {
   "name": "p5.zine",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "p5.zine is an open-sourced and friendly library for anyone curious about creative code and zine-making.",
   "main": "dist/p5.zine.js",
   "browser": "dist/p5.zine.js",
@@ -41,9 +41,8 @@
   "sideEffects": true,
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "esbuild": "^0.24.0"
-  },
-  "dependencies": {
+    "esbuild": "^0.24.0",
     "jspdf": "^2.5.2"
-  }
+  },
+  "dependencies": {}
 }

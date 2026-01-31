@@ -21,7 +21,9 @@ const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 const buildOptions = {
   entryPoints: {
     "p5.zine": "src/index.modern.js",
+    "p5.zine.full": "src/index.modern.full.js",
     "p5.zine.legacy": "src/index.legacy.js",
+    "p5.zine.legacy.full": "src/index.legacy.full.js",
   },
   bundle: true,
   minify: !isDev,

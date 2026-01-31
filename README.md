@@ -11,7 +11,7 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2/lib/p5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/p5.zine@0.0.1/dist/p5.zine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5.zine"></script>
 <script>
   function setup() {}
   function draw() {
@@ -30,7 +30,7 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
 
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/p5.zine@0.0.1/dist/p5.zine.legacy.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5.zine/dist/p5.zine.legacy.js"></script>
 ```
 
 ## Table of contents
@@ -64,6 +64,8 @@ The build outputs two bundles:
 
 - `dist/p5.zine.js` → **p5 2.x** (`p5.registerAddon`)
 - `dist/p5.zine.legacy.js` → **p5 1.x** (`p5.prototype` + `registerMethod`)
+- `dist/p5.zine.full.js` → **p5 2.x** with jsPDF bundled (offline PDF export)
+- `dist/p5.zine.legacy.full.js` → **p5 1.x** with jsPDF bundled (offline PDF export)
 
 ## Local dev / preview
 
@@ -133,6 +135,9 @@ window.zine = {
   // DPI + units (used for inches/cm/mm/pt conversions)
   pageDPI: 96,
   pageUnit: "in",
+
+  // Optional: override the jsPDF CDN used for PDF export
+  // pdfCdn: "https://cdn.jsdelivr.net/npm/jspdf@2/dist/jspdf.umd.min.js"
 };
 ```
 
@@ -191,6 +196,10 @@ The “download” button exports each page as an image. The extension matches `
 PDFs are generated using the imposition layout. The PDF page size is derived from your
 `pageDPI` / `paperDPI` so the PDF matches the paper dimensions instead of forcing Letter.
 
+For smaller bundle sizes, jsPDF is **lazy‑loaded** from a CDN when you click “download .pdf”.
+If you’re offline or want to self‑host, include jsPDF yourself or set `window.zine.pdfCdn`.
+You can also use the **full** bundles (`p5.zine.full.js`, `p5.zine.legacy.full.js`) which include jsPDF.
+
 ## Custom helpers (custom.js)
 
 These helpers are available on both `p5` and `p5.Graphics`:
@@ -211,13 +220,59 @@ These helpers are available on both `p5` and `p5.Graphics`:
 
 ## CDN usage (advanced)
 
-If you want a pinned version:
+If you omit the version, CDN will serve the latest tag (which can include breaking changes).
+
+### UMD via jsDelivr
+
+**p5 2.x (modern):**
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/p5.zine@0.0.1/dist/p5.zine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5.zine"></script>
 ```
 
-If you omit the version, CDN will serve the latest tag (which can include breaking changes).
+**p5 1.x (legacy):**
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/p5.zine/dist/p5.zine.legacy.js"></script>
+```
+
+**p5 2.x (modern, full):**
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/p5.zine/dist/p5.zine.full.js"></script>
+```
+
+**p5 1.x (legacy, full):**
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/p5.zine/dist/p5.zine.legacy.full.js"></script>
+```
+
+### UMD via UNPKG
+
+**p5 2.x (modern):**
+
+```html
+<script src="https://unpkg.com/p5.zine/dist/p5.zine.js"></script>
+```
+
+**p5 1.x (legacy):**
+
+```html
+<script src="https://unpkg.com/p5.zine/dist/p5.zine.legacy.js"></script>
+```
+
+**p5 2.x (modern, full):**
+
+```html
+<script src="https://unpkg.com/p5.zine/dist/p5.zine.full.js"></script>
+```
+
+**p5 1.x (legacy, full):**
+
+```html
+<script src="https://unpkg.com/p5.zine/dist/p5.zine.legacy.full.js"></script>
+```
 
 ## Architecture (1.x + 2.x addons)
 
