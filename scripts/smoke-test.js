@@ -3,8 +3,10 @@ const path = require("path");
 const assert = require("assert");
 
 const root = path.resolve(__dirname, "..");
-const distPath = path.join(root, "dist", "p5.zine.js");
-const testHtmlPath = path.join(root, "test", "index.html");
+const distModern = path.join(root, "dist", "p5.zine.js");
+const distLegacy = path.join(root, "dist", "p5.zine.legacy.js");
+const testModern = path.join(root, "test", "index.html");
+const testLegacy = path.join(root, "test", "index.legacy.html");
 
 function fileExists(filePath) {
   try {
@@ -15,22 +17,37 @@ function fileExists(filePath) {
   }
 }
 
-assert.ok(fileExists(distPath), "dist/p5.zine.js does not exist. Run npm run build first.");
+assert.ok(fileExists(distModern), "dist/p5.zine.js does not exist. Run npm run build first.");
+assert.ok(fileExists(distLegacy), "dist/p5.zine.legacy.js does not exist. Run npm run build first.");
 
-const distStat = fs.statSync(distPath);
-assert.ok(distStat.size > 0, "dist/p5.zine.js is empty.");
+const modernStat = fs.statSync(distModern);
+const legacyStat = fs.statSync(distLegacy);
+assert.ok(modernStat.size > 0, "dist/p5.zine.js is empty.");
+assert.ok(legacyStat.size > 0, "dist/p5.zine.legacy.js is empty.");
 
-const distContent = fs.readFileSync(distPath, "utf8");
+const modernContent = fs.readFileSync(distModern, "utf8");
+const legacyContent = fs.readFileSync(distLegacy, "utf8");
 assert.ok(
-  distContent.includes("p5.zine"),
+  modernContent.includes("p5.zine"),
   "dist/p5.zine.js does not include expected library banner/string."
 );
-
-assert.ok(fileExists(testHtmlPath), "test/index.html is missing.");
-const testHtml = fs.readFileSync(testHtmlPath, "utf8");
 assert.ok(
-  testHtml.includes("../dist/p5.zine.js"),
+  legacyContent.includes("p5.zine"),
+  "dist/p5.zine.legacy.js does not include expected library banner/string."
+);
+
+assert.ok(fileExists(testModern), "test/index.html is missing.");
+assert.ok(fileExists(testLegacy), "test/index.legacy.html is missing.");
+
+const testModernHtml = fs.readFileSync(testModern, "utf8");
+const testLegacyHtml = fs.readFileSync(testLegacy, "utf8");
+assert.ok(
+  testModernHtml.includes("../dist/p5.zine.js"),
   "test/index.html does not reference ../dist/p5.zine.js."
+);
+assert.ok(
+  testLegacyHtml.includes("../dist/p5.zine.legacy.js"),
+  "test/index.legacy.html does not reference ../dist/p5.zine.legacy.js."
 );
 
 console.log("Smoke test passed ✅");

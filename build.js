@@ -19,17 +19,24 @@ const host = process.env.HOST || "localhost";
 const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 const buildOptions = {
-  entryPoints: ["src/index.js"],
+  entryPoints: {
+    "p5.zine": "src/index.modern.js",
+    "p5.zine.legacy": "src/index.legacy.js",
+  },
   bundle: true,
   minify: !isDev,
   sourcemap: isDev ? "inline" : false,
-  outfile: "dist/p5.zine.js",
+  outdir: "dist",
   legalComments: "inline",
   banner: {
     js: banner,
   },
   logLevel: "info",
   color: true,
+  loader: {
+    ".html": "text",
+    ".css": "text",
+  },
 };
 
 async function run() {
@@ -54,7 +61,7 @@ async function run() {
     });
 
     console.log(
-      `Serving on http://${server.host}:${server.port} (open /test/index.html)`
+      `Serving on http://${server.host}:${server.port} (open /test/index.html or /test/index.legacy.html)`
     );
   }
 

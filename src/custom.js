@@ -1,5 +1,13 @@
 // customized functions
-p5.prototype.Background = function (r, g, b) {
+export function customAddon(p5, fn) {
+  const applyMethod = (name, method) => {
+    fn[name] = method;
+    if (p5?.Graphics?.prototype) {
+      p5.Graphics.prototype[name] = method;
+    }
+  };
+
+  applyMethod("Background", function (r, g, b) {
     if (typeof r === "string") {
       if (r.indexOf("rgb") > -1) {
         let colorArr = r.slice(r.indexOf("(") + 1, r.indexOf(")")).split(",");
@@ -13,9 +21,9 @@ p5.prototype.Background = function (r, g, b) {
       }
     }
     this.background(r, g, b);
-  };
+  });
 
-  p5.prototype.selfieBackground = function (r, g, b) {
+  applyMethod("selfieBackground", function (r, g, b) {
     this.push();
     this.translate(this.width, 0);
     this.scale(-1, 1);
@@ -42,9 +50,9 @@ p5.prototype.Background = function (r, g, b) {
       );
     }
     this.pop();
-  };
+  });
 
-  p5.prototype.rightCamera = function () {
+  applyMethod("rightCamera", function () {
     image(
       capture,
       0,
@@ -52,9 +60,9 @@ p5.prototype.Background = function (r, g, b) {
       this.width,
       (this.width * capture.height) / capture.width
     );
-  };
+  });
 
-  p5.prototype.randomLayout = function (
+  applyMethod("randomLayout", function (
     word = ["word"],
     size = 7,
     num = 5,
@@ -89,9 +97,9 @@ p5.prototype.Background = function (r, g, b) {
       }
     }
     this.pop();
-  };
+  });
 
-  p5.prototype.gridLayout = function (
+  applyMethod("gridLayout", function (
     word = ["word"],
     size = 7,
     columnNum = 5,
@@ -132,9 +140,9 @@ p5.prototype.Background = function (r, g, b) {
       }
     }
     this.pop();
-  };
+  });
 
-  p5.prototype.glitchLayout = function (
+  applyMethod("glitchLayout", function (
     word = ["word"],
     sizer = 7,
     numMax = 5,
@@ -166,9 +174,9 @@ p5.prototype.Background = function (r, g, b) {
         }
       }
     }
-  };
+  });
 
-  p5.prototype.leftBackground = function (r, g, b) {
+  applyMethod("leftBackground", function (r, g, b) {
     this.push();
     this.noStroke();
     if (typeof r === "string") {
@@ -187,9 +195,9 @@ p5.prototype.Background = function (r, g, b) {
     }
     this.rect(0, 0, this.width / 2, this.height);
     this.pop();
-  };
+  });
 
-  p5.prototype.rightBackground = function (r, g, b) {
+  applyMethod("rightBackground", function (r, g, b) {
     this.push();
     this.noStroke();
     if (typeof r === "string") {
@@ -208,9 +216,9 @@ p5.prototype.Background = function (r, g, b) {
     }
     this.rect(this.width / 2, 0, this.width / 2, this.height);
     this.pop();
-  };
+  });
 
-  p5.prototype.fullPage = function (material) {
+  applyMethod("fullPage", function (material) {
     let size;
 
     if (typeof material === "object") {
@@ -226,9 +234,9 @@ p5.prototype.Background = function (r, g, b) {
     } else {
       this.text(material, 10, 10, this.width - 20);
     }
-  };
+  });
 
-  p5.prototype.leftPage = function (material, offsetX, offsetY) {
+  applyMethod("leftPage", function (material, offsetX, offsetY) {
     this.push();
     this.translate(offsetX, offsetY);
     if (typeof material === "object") {
@@ -252,9 +260,9 @@ p5.prototype.Background = function (r, g, b) {
       this.pop();
     }
     this.pop();
-  };
+  });
 
-  p5.prototype.rightPage = function (material, offsetX, offsetY) {
+  applyMethod("rightPage", function (material, offsetX, offsetY) {
     this.push();
     this.translate(offsetX, offsetY);
     if (typeof material === "object") {
@@ -283,9 +291,9 @@ p5.prototype.Background = function (r, g, b) {
       this.pop();
     }
     this.pop();
-  };
+  });
 
-  p5.prototype.textSet = function (
+  applyMethod("textSet", function (
     theFont = "Averia Libre",
     theSize = 20,
     theAlign = LEFT,
@@ -299,9 +307,9 @@ p5.prototype.Background = function (r, g, b) {
     this.textSize(theSize);
     this.textAlign(theAlign);
     this.textLeading(theLead);
-  };
+  });
 
-  p5.prototype.textBox = function (
+  applyMethod("textBox", function (
     inputText,
     startX = 0,
     startY = 0,
@@ -418,4 +426,5 @@ p5.prototype.Background = function (r, g, b) {
       }
       this.pop();
     }
-  };
+  });
+}
