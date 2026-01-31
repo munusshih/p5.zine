@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "p5.zine is an open-sourced and friendly library for anyone curious about creative code and zine-making.",
   "main": "dist/p5.zine.js",
+  "browser": "dist/p5.zine.js",
+  "unpkg": "dist/p5.zine.js",
+  "jsdelivr": "dist/p5.zine.js",
   "files": [
     "dist",
     "README.md",
@@ -14,7 +17,7 @@
     "preview": "node build.js --serve --dev",
     "test": "node build.js && node scripts/smoke-test.js",
     "prepublishOnly": "npm run build",
-    "publish": "npm publish --access public"
+    "release": "npm publish"
   },
   "repository": {
     "type": "git",

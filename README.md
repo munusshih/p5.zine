@@ -10,8 +10,8 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
 ### p5 2.x
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/p5@2.2.0/lib/p5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/p5.zine@1.0.1/dist/p5.zine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5@2/lib/p5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5.zine@0.0.1/dist/p5.zine.js"></script>
 <script>
   function setup() {}
   function draw() {
@@ -30,26 +30,33 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
 
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.1/p5.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/p5.zine@1.0.1/dist/p5.zine.legacy.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5.zine@0.0.1/dist/p5.zine.legacy.js"></script>
 ```
 
 ## Table of contents
 
-- [Quick start (CDN, easiest)](#quick-start-cdn-easiest)
-- [Bundles (p5 2.x + 1.x)](#bundles-p5-2x--1x)
-- [Local dev / preview](#local-dev--preview)
-- [Pages](#pages)
-- [Configuration (window.zine)](#configuration-windowzine)
-- [Preview modes](#preview-modes)
-- [Mouse handling](#mouse-handling)
-- [Download background](#download-background)
-- [Page size vs. paper size](#page-size-vs-paper-size)
-- [Export](#export)
-- [Custom helpers (custom.js)](#custom-helpers-customjs)
-- [CDN usage (advanced)](#cdn-usage-advanced)
-- [Releases & versioning (maintainers)](#releases--versioning-maintainers)
-- [Architecture (1.x + 2.x addons)](#architecture-1x--2x-addons)
-- [Internal defaults](#internal-defaults)
+- [p5.zine](#p5zine)
+  - [Quick start (CDN, easiest)](#quick-start-cdn-easiest)
+    - [p5 2.x](#p5-2x)
+    - [p5 1.x (legacy)](#p5-1x-legacy)
+  - [Table of contents](#table-of-contents)
+  - [Bundles (p5 2.x + 1.x)](#bundles-p5-2x--1x)
+  - [Local dev / preview](#local-dev--preview)
+  - [Pages](#pages)
+  - [Configuration (`window.zine`)](#configuration-windowzine)
+  - [Preview modes](#preview-modes)
+  - [Mouse handling](#mouse-handling)
+  - [Download background](#download-background)
+  - [Page size vs. paper size](#page-size-vs-paper-size)
+    - [`zinePageSize(width, height, options)`](#zinepagesizewidth-height-options)
+    - [`zinePaperSize(width, height, options)`](#zinepapersizewidth-height-options)
+  - [Export](#export)
+    - [JPG / PNG](#jpg--png)
+    - [PDF](#pdf)
+  - [Custom helpers (custom.js)](#custom-helpers-customjs)
+  - [CDN usage (advanced)](#cdn-usage-advanced)
+  - [Architecture (1.x + 2.x addons)](#architecture-1x--2x-addons)
+  - [Internal defaults](#internal-defaults)
 
 ## Bundles (p5 2.x + 1.x)
 
@@ -111,7 +118,7 @@ window.zine = {
   downloadBackground: "#ffffff", // default white; use "transparent" for none
 
   mouseClamp: true, // keep mouse within each page
-  mousePadding: 0,  // when mouseClamp is false, allow extra padding
+  mousePadding: 0, // when mouseClamp is false, allow extra padding
 
   // page size (single page)
   pageWidth: "8.5in",
@@ -125,7 +132,7 @@ window.zine = {
 
   // DPI + units (used for inches/cm/mm/pt conversions)
   pageDPI: 96,
-  pageUnit: "in"
+  pageUnit: "in",
 };
 ```
 
@@ -147,6 +154,7 @@ Set `downloadBackground: "transparent"` to keep transparency (only works with PN
 ## Page size vs. paper size
 
 ### `zinePageSize(width, height, options)`
+
 Sets the **base size for each single page** (cover/back). Full spreads are 2× width.
 
 ```js
@@ -156,6 +164,7 @@ function setup() {
 ```
 
 ### `zinePaperSize(width, height, options)`
+
 Sets the **full paper size** (imposition) and derives the page size:
 
 - `pageWidth = paperHeight / 4`
@@ -205,26 +214,10 @@ These helpers are available on both `p5` and `p5.Graphics`:
 If you want a pinned version:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/p5.zine@1.0.1/dist/p5.zine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5.zine@0.0.1/dist/p5.zine.js"></script>
 ```
 
 If you omit the version, CDN will serve the latest tag (which can include breaking changes).
-
-## Releases & versioning (maintainers)
-
-This project publishes to npm primarily to power CDN distribution. If you’re a maintainer:
-
-```bash
-npm version patch   # or minor / major
-npm run build
-npm publish
-```
-
-If you want automated releases, I can set up:
-
-- GitHub Actions for `npm publish` on tag
-- Auto‑generated changelog
-- Release notes from conventional commits
 
 ## Architecture (1.x + 2.x addons)
 
@@ -252,7 +245,7 @@ const DEFAULTS = {
   rHeight: 306,
   pWidth: 800,
   frameRate: 10,
-  pixelDensity: 1
+  pixelDensity: 1,
 };
 ```
 
