@@ -5,6 +5,9 @@
   "main": "main.js",
   "scripts": {
     "build": "node build.js",
+    "dev": "node build.js --watch --serve --dev",
+    "preview": "node build.js --serve --dev",
+    "test": "node build.js && node scripts/smoke-test.js",
     "publish": "npm publish --access public"
   },
   "publishConfig": {
