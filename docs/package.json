@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "ace-code": "^1.43.6",
     "astro": "^5.17.1"
   }
 }

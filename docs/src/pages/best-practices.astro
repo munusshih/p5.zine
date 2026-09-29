@@ -23,9 +23,13 @@ import Embed from "../components/Embed.astro";
     <Embed
       title="Best practice demo"
       runtime="modern"
-      code={`function setup() {
+      code={`window.zine = {
+  downloadFormat: "png",
+  accentColor: "#7c3aed"
+};
+
+function setup() {
   zinePageSize("8.5in", "11in", { dpi: 150 });
-  window.zine = { downloadFormat: "png" };
 }
 
 function draw() {

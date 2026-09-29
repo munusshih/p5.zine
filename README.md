@@ -7,17 +7,28 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
 
 ## Quick start (CDN, easiest)
 
+> Use p5.zine `0.0.4` or newer for drawing on pages inside `setup()` and for
+> `accentColor` support.
+
 ### p5 1.x + 2.x (global)
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2/lib/p5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/p5.zine"></script>
 <script>
-  function setup() {}
-  function draw() {
+  window.zine = {
+    title: "My Zine",
+    accentColor: "#7c3aed",
+    cam: false
+  };
+
+  function setup() {
+    zinePageSize("8.5in", "11in");
     cover.background(255);
     cover.text("Hello", 40, 60);
+  }
 
+  function draw() {
     one.background(240);
     if (one.mouseHere) {
       one.ellipse(one.mouseX, one.mouseY, 40);
@@ -25,8 +36,6 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
   }
 </script>
 ```
-
-> Works with p5 1.x too — just swap the p5 script tag for a 1.x build.
 
 ## Table of contents
 
@@ -38,6 +47,7 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
   - [Local dev / preview](#local-dev--preview)
   - [Pages](#pages)
   - [Configuration (`window.zine`)](#configuration-windowzine)
+    - [Accent color](#accent-color)
   - [Preview modes](#preview-modes)
   - [Mouse handling](#mouse-handling)
   - [Download background](#download-background)
@@ -49,6 +59,8 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
     - [PDF](#pdf)
   - [Custom helpers (custom.js)](#custom-helpers-customjs)
   - [CDN usage (advanced)](#cdn-usage-advanced)
+    - [UMD via jsDelivr](#umd-via-jsdelivr)
+    - [UMD via UNPKG](#umd-via-unpkg)
   - [Architecture (1.x + 2.x addons)](#architecture-1x--2x-addons)
   - [Internal defaults](#internal-defaults)
 
@@ -90,6 +102,7 @@ The library exposes five `p5.Graphics` pages:
 - `back`
 
 Each page is its own canvas. In the default preview mode, these canvases are mounted in the DOM and scaled responsively.
+The page globals are ready before your `setup()` function runs, so you can draw on them in either `setup()` or `draw()`.
 
 ## Configuration (`window.zine`)
 
@@ -99,6 +112,8 @@ Set options **before** `setup()` runs:
 window.zine = {
   title: "My Zine",
   author: "Your Name",
+  authorUrl: "https://example.com",
+  accentColor: "#7c3aed",
   preview: "pages", // "pages" (default) or "canvas"
   cam: false, // set false to disable webcam capture
   downloadFormat: "png", // "png" (default) or "jpg"
@@ -107,13 +122,25 @@ window.zine = {
 
 Other optional settings:
 
-- `description`, `personalUrl`
+- `description`, `authorUrl`, `accentColor`
 - `frameRate`, `pixelDensity`
 - `downloadBackground` (set `"transparent"` for PNG)
 - `mouseClamp`, `mousePadding`
 - `pdfCdn` (override jsPDF CDN for PDF export)
 
 Sizing is configured via `zinePageSize` / `zinePaperSize` (below).
+
+### Accent color
+
+Set `accentColor` once in `window.zine` to recolor the preview UI, including its headings, labels, borders, and buttons:
+
+```js
+window.zine = {
+  accentColor: "#7c3aed",
+};
+```
+
+This changes the p5.zine interface, not the artwork drawn inside your pages. Page colors remain under your sketch’s control.
 
 ## Preview modes
 
@@ -139,8 +166,11 @@ Sets the **base size for each single page** (cover/back). Full spreads are 2× w
 ```js
 function setup() {
   zinePageSize("8.5in", "11in", { dpi: 96 });
+  cover.background(255);
 }
 ```
+
+Call the sizing helper once, at the beginning of `setup()`, before drawing on a page.
 
 ### `zinePaperSize(width, height, options)`
 
@@ -194,7 +224,7 @@ These helpers are available on both `p5` and `p5.Graphics`:
 
 ## CDN usage (advanced)
 
-If you omit the version, CDN will serve the latest tag (which can include breaking changes).
+If you omit the version, the CDN serves the latest npm tag. Pin an exact version for published projects so a future release cannot change their behavior unexpectedly.
 
 ### UMD via jsDelivr
 
@@ -230,6 +260,7 @@ Core addon logic lives in:
 
 - `src/zine.js`
 - `src/custom.js`
+- `src/ui.js` (UI HTML + CSS injection)
 
 Adapters bridge to each runtime:
 
@@ -250,11 +281,11 @@ const DEFAULTS = {
   pWidth: 800,
   frameRate: 10,
   pixelDensity: 1,
+  accentColor: "#ed225d",
 };
 ```
 
 - `maxSinglePageWidth`: cap for the legacy preview canvas.
 - `rWidth` / `rHeight`: reference ratio used to compute page height from width.
 - `pWidth`: base width for a single page (pixels).
-
-If you want these exposed as public config, say the word and I’ll wire them up.
+- `accentColor`: fallback interface accent when `window.zine.accentColor` is not set.

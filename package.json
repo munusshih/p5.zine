@@ -1,6 +1,6 @@
 {
   "name": "p5.zine",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "p5.zine is an open-sourced and friendly library for anyone curious about creative code and zine-making.",
   "main": "dist/p5.zine.js",
   "browser": "dist/p5.zine.js",
@@ -16,6 +16,7 @@
     "docs:build": "node scripts/build-docs.js && npm --prefix docs run build",
     "docs:dev": "node scripts/build-docs.js && npm --prefix docs run dev",
     "dev": "node build.js --watch --serve --dev",
+    "dev:all": "node scripts/dev-all.js",
     "preview": "node build.js --serve --dev",
     "test": "node build.js && node scripts/smoke-test.js",
     "prepublishOnly": "npm run build",
@@ -23,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/munusshih/p5.zine.git"
+    "url": "git+https://github.com/munusshih/p5.zine.git"
   },
   "homepage": "https://github.com/munusshih/p5.zine",
   "bugs": {

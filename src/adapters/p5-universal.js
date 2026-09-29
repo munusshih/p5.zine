@@ -34,16 +34,27 @@ function exposeGlobals(instance) {
   const pages = ["cover", "one", "two", "three", "back"];
   pages.forEach((key) => {
     if (instance[key]) {
-      window[key] = instance[key];
+      exposeWritableGlobal(key, instance[key]);
     }
   });
 
   if (instance.selfie) {
-    window.selfie = instance.selfie;
+    exposeWritableGlobal("selfie", instance.selfie);
   }
 
   if (instance.all) {
-    window.all = instance.all;
+    exposeWritableGlobal("all", instance.all);
+  }
+}
+
+function exposeWritableGlobal(key, value) {
+  const descriptor = Object.getOwnPropertyDescriptor(window, key);
+  if (
+    !descriptor ||
+    descriptor.writable ||
+    typeof descriptor.set === "function"
+  ) {
+    window[key] = value;
   }
 }
 

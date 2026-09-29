@@ -16,16 +16,28 @@ import Embed from "../components/Embed.astro";
       <code>&lt;script src="https://cdn.jsdelivr.net/npm/p5@2/lib/p5.min.js"&gt;&lt;/script&gt;</code><br />
       <code>&lt;script src="https://cdn.jsdelivr.net/npm/p5.zine"&gt;&lt;/script&gt;</code><br />
       <span>Swap the p5 script tag for a 1.x build if needed.</span>
+      <br />
+      <span>
+        Use p5.zine 0.0.4 or newer for drawing on pages inside <code>setup()</code> and
+        for <code>accentColor</code> support.
+      </span>
     </div>
   </section>
 
   <section class="section">
     <h2>Step 2 — Use the page canvases</h2>
-    <p>Draw on <code>cover</code>, <code>one</code>, <code>two</code>, <code>three</code>, and <code>back</code>.</p>
+    <p>
+      Draw on <code>cover</code>, <code>one</code>, <code>two</code>, <code>three</code>, and
+      <code>back</code>. Set <code>accentColor</code> once to recolor the preview UI.
+    </p>
     <Embed
       title="Quick start"
       runtime="modern"
-      code={`function setup() {
+      code={`window.zine = {
+  accentColor: "#7c3aed"
+};
+
+function setup() {
   zinePageSize("8.5in", "11in");
 }
 

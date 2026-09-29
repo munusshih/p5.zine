@@ -1,10 +1,10 @@
 window.zine = {
   title: "p5.zine test",
   author: "p5.zine",
+  authorUrl: "https://example.com",
+  accentColor: "#7c3aed",
   preview: "pages",
   cam: false,
-  frameRate: 12,
-  pixelDensity: 1,
   downloadFormat: "png",
   downloadBackground: "#ffffff",
 };
@@ -13,6 +13,8 @@ let stamp;
 
 function setup() {
   zinePageSize("1in", "11in", { dpi: 120 });
+  cover.background(255);
+  cover.text("setup ready", 5, 15);
 
   stamp = createGraphics(120, 120);
   stamp.background(255);

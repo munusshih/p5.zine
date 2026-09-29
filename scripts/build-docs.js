@@ -124,6 +124,12 @@ function build() {
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(outFile, JSON.stringify(sorted, null, 2) + "\n");
   console.log(`Docs data written to ${path.relative(root, outFile)}`);
+
+  if (!fs.existsSync(path.join(root, "docs", "node_modules"))) {
+    console.warn(
+      "Docs dependencies not installed. Run `npm --prefix docs install` if the docs build fails.",
+    );
+  }
 }
 
 build();

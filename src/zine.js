@@ -15,6 +15,7 @@ const DEFAULTS = {
   pWidth: 800,
   frameRate: 10,
   pixelDensity: 1,
+  accentColor: "#ed225d",
 };
 
 const PREVIEW_MODES = {
@@ -24,6 +25,21 @@ const PREVIEW_MODES = {
 
 let activeZine = null;
 let jsPdfLoadPromise = null;
+
+function exposeWritableGlobal(key, value) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const descriptor = Object.getOwnPropertyDescriptor(window, key);
+  if (
+    !descriptor ||
+    descriptor.writable ||
+    typeof descriptor.set === "function"
+  ) {
+    window[key] = value;
+  }
+}
 
 function resolveJsPdfGlobal() {
   if (typeof window === "undefined") {
@@ -124,6 +140,7 @@ class ZineManager {
     this.previewMode = PREVIEW_MODES.PAGES;
     this.lastPointer = null;
     this.pointerBound = false;
+    this.setupComplete = false;
 
     this.maxSinglePageWidth = DEFAULTS.maxSinglePageWidth;
     this.rWidth = DEFAULTS.rWidth;
@@ -142,6 +159,7 @@ class ZineManager {
     this.downloadFormat = "png";
     this.mousePadding = 0;
     this.clampMouse = true;
+    this.accentColor = DEFAULTS.accentColor;
   }
 
   init() {
@@ -181,6 +199,11 @@ class ZineManager {
         typeof window.zine.pixelDensity !== "undefined"
           ? window.zine.pixelDensity
           : this.pixelDensity;
+      this.accentColor =
+        typeof window.zine.accentColor === "string" &&
+        window.zine.accentColor.trim()
+          ? window.zine.accentColor.trim()
+          : this.accentColor;
     }
 
     const { width, height, dpi } = resolvePageDimensions(window.zine || {}, {
@@ -276,6 +299,50 @@ class ZineManager {
     });
 
     this.p.all = graphics;
+
+    // p5 1.x copies addon properties onto `window`; p5 2.x exposes read-only
+    // getters instead. Update only writable globals whenever pages are remade.
+    this.pages.forEach((page) => {
+      exposeWritableGlobal(page.key, page.graphics);
+    });
+    exposeWritableGlobal("all", graphics);
+  }
+
+  rebuildPages() {
+    this.pages.forEach((page) => {
+      if (page.wrapper) {
+        page.wrapper.remove();
+      }
+      if (typeof page.graphics?.remove === "function") {
+        page.graphics.remove();
+      }
+    });
+
+    this.applyConfig();
+    this.createPages();
+
+    if (this.previewMode === PREVIEW_MODES.CANVAS) {
+      this.updateAdaptiveWidth();
+      this.resizeCanvas();
+    } else {
+      this.mountPages();
+      this.layoutPages();
+    }
+  }
+
+  finishSetup() {
+    this.setupComplete = true;
+
+    if (this.previewMode === PREVIEW_MODES.CANVAS) {
+      this.updateAdaptiveWidth();
+      this.resizeCanvas();
+      return;
+    }
+
+    const rootCanvas = this.p._renderer?.canvas;
+    if (rootCanvas?.style) {
+      rootCanvas.style.display = "none";
+    }
   }
 
   mountPages() {
@@ -413,18 +480,18 @@ class ZineManager {
     }
 
     if (typeof window.zine === "object" && window.zine !== null) {
-      const titleEl = document.querySelector("#genTitle");
+      const titleEl = document.querySelector("#zine-title");
       const authorEl = document.querySelector("#author");
       const descEl = document.querySelector("#des");
 
       if (titleEl) {
-        titleEl.innerHTML = window.zine?.title || "Default Title";
+        titleEl.innerHTML = window.zine?.title || "p5.zine";
       }
       if (authorEl) {
+        const authorUrl =
+          window.zine?.authorUrl || window.zine?.personalUrl || "#";
         authorEl.innerHTML = window.zine?.author
-          ? `by <a href="${window.zine?.personalUrl || "#"}">${
-              window.zine?.author
-            }</a>`
+          ? `by <a href="${authorUrl}">${window.zine?.author}</a>`
           : "by Unknown Author";
       }
       if (descEl) {
@@ -498,7 +565,7 @@ class ZineManager {
     });
 
     p.noStroke();
-    p.fill("#ed225d");
+    p.fill(this.accentColor);
     p.textSize(15);
     p.textFont("monospace");
     layout.forEach((item) => {
@@ -508,7 +575,7 @@ class ZineManager {
     });
 
     p.noFill();
-    p.stroke("#ed225d");
+    p.stroke(this.accentColor);
     p.strokeWeight(1);
     layout.forEach((item) => {
       if (item.isSingle) {
@@ -783,7 +850,7 @@ class ZineManager {
       }
 
       const exportGraphic = this.buildPageExportGraphic(page);
-      exportGraphic.save(`${index}-genZ${stamp}.${extension}`);
+      exportGraphic.save(`p5-zine-${index}-${stamp}.${extension}`);
       if (typeof exportGraphic.remove === "function") {
         exportGraphic.remove();
       }
@@ -836,7 +903,7 @@ class ZineManager {
       ) {
         fileName = window.zine.title;
       } else {
-        fileName = "(gen)zine";
+        fileName = "p5-zine";
       }
 
       if (
@@ -884,6 +951,13 @@ export function zineAddon(p5, fn, lifecycles) {
     instance._zine.updateMousePositions();
   };
 
+  fn.finishZineSetup = function () {
+    const instance = resolveP5Instance(this);
+    if (instance._zine) {
+      instance._zine.finishSetup();
+    }
+  };
+
   fn.drawZine = function () {
     const instance = resolveP5Instance(this);
     if (!instance._zine) {
@@ -913,9 +987,9 @@ export function zineAddon(p5, fn, lifecycles) {
       return;
     }
 
-    if (this._zine) {
+    if (this._zine?.setupComplete) {
       console.warn(
-        "zinePageSize() should be called before setup; reload to apply changes.",
+        "zinePageSize() should be called in setup(); reload to apply changes.",
       );
       return;
     }
@@ -939,6 +1013,10 @@ export function zineAddon(p5, fn, lifecycles) {
         window.zine.pageDPI = options.dpi;
       }
     }
+
+    if (this._zine) {
+      this._zine.rebuildPages();
+    }
   };
 
   fn.zinePaperSize = function (width, height, options = {}) {
@@ -946,9 +1024,9 @@ export function zineAddon(p5, fn, lifecycles) {
       return;
     }
 
-    if (this._zine) {
+    if (this._zine?.setupComplete) {
       console.warn(
-        "zinePaperSize() should be called before setup; reload to apply changes.",
+        "zinePaperSize() should be called in setup(); reload to apply changes.",
       );
       return;
     }
@@ -971,6 +1049,10 @@ export function zineAddon(p5, fn, lifecycles) {
       if (typeof options.dpi === "number") {
         window.zine.paperDPI = options.dpi;
       }
+    }
+
+    if (this._zine) {
+      this._zine.rebuildPages();
     }
   };
 
@@ -1029,9 +1111,14 @@ export function zineAddon(p5, fn, lifecycles) {
   };
 
   if (lifecycles) {
-    lifecycles.postsetup = function () {
+    lifecycles.presetup = function () {
       if (typeof this.initZine === "function") {
         this.initZine();
+      }
+    };
+    lifecycles.postsetup = function () {
+      if (typeof this.finishZineSetup === "function") {
+        this.finishZineSetup();
       }
     };
     lifecycles.predraw = function () {

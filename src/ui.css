@@ -2,14 +2,14 @@
 
 html[data-theme=light] {
   --color-text: #333;
-  --accent-color: #ed225d;
+  --accent-color: var(--zine-accent-color, #ed225d);
   --line-color: #ddd;
   --color-background: #fff;
 }
 
 html[data-theme=dark] {
   --color-text: #fff;
-  --accent-color: #ed225d;
+  --accent-color: var(--zine-accent-color, #ed225d);
   --line-color: #ddd;
   --color-background: #000;
 }
@@ -23,7 +23,7 @@ body {
   margin: 0;
   padding: 0;
   padding-top: 30px;
-  background: url(https://munusshih.github.io/p5.genzine/bg.png) repeat fixed var(--color-background);
+  background: var(--color-background);
   scroll-behavior: smooth;
   transition: cubic-bezier(0.68, -0.55, 0.27, 1.55) 420ms !important;
   transition-delay: 0 !important;
