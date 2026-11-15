@@ -14,7 +14,7 @@ import Embed from "../components/Embed.astro";
     <div class="callout">
       <strong>Global (p5 1.x + 2.x)</strong><br />
       <code>&lt;script src="https://cdn.jsdelivr.net/npm/p5@2/lib/p5.min.js"&gt;&lt;/script&gt;</code><br />
-      <code>&lt;script src="https://cdn.jsdelivr.net/npm/p5.zine"&gt;&lt;/script&gt;</code><br />
+      <code>&lt;script src="https://cdn.jsdelivr.net/npm/p5.zine@0.0.4"&gt;&lt;/script&gt;</code><br />
       <span>Swap the p5 script tag for a 1.x build if needed.</span>
       <br />
       <span>
@@ -28,13 +28,13 @@ import Embed from "../components/Embed.astro";
     <h2>Step 2 — Use the page canvases</h2>
     <p>
       Draw on <code>cover</code>, <code>one</code>, <code>two</code>, <code>three</code>, and
-      <code>back</code>. Set <code>accentColor</code> once to recolor the preview UI.
+      <code>back</code>.
     </p>
     <Embed
       title="Quick start"
       runtime="modern"
       code={`window.zine = {
-  accentColor: "#7c3aed"
+  cam: false
 };
 
 function setup() {

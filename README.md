@@ -7,14 +7,11 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
 
 ## Quick start (CDN, easiest)
 
-> Use p5.zine `0.0.4` or newer for drawing on pages inside `setup()` and for
-> `accentColor` support.
-
 ### p5 1.x + 2.x (global)
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/p5@2/lib/p5.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/p5.zine"></script>
+<script src="https://cdn.jsdelivr.net/npm/p5.zine@0.0.4"></script>
 <script>
   window.zine = {
     title: "My Zine",
@@ -45,6 +42,7 @@ p5.zine is a **browser‑first** library on top of p5.js for making printable zi
   - [Table of contents](#table-of-contents)
   - [Bundles (p5 2.x + 1.x)](#bundles-p5-2x--1x)
   - [Local dev / preview](#local-dev--preview)
+  - [Offline playground](#offline-playground)
   - [Pages](#pages)
   - [Configuration (`window.zine`)](#configuration-windowzine)
     - [Accent color](#accent-color)
@@ -91,6 +89,15 @@ npm run preview
 npm run test
 ```
 
+## Offline playground
+
+Run `npm ci` once while online, then run `npm run playground`.
+Open `dist/p5-zine-playground/index.html` in a browser. Edit the `sketch.js`
+beside it and refresh to see your changes. The folder contains p5.js and the
+full p5.zine bundle, including PDF export. You can copy the entire folder
+elsewhere and open it without a server, npm, or Wi-Fi. Rebuilding preserves
+your edits to the generated `sketch.js`.
+
 ## Pages
 
 The library exposes five `p5.Graphics` pages:
@@ -102,9 +109,31 @@ The library exposes five `p5.Graphics` pages:
 - `back`
 
 Each page is its own canvas. In the default preview mode, these canvases are mounted in the DOM and scaled responsively.
-The page globals are ready before your `setup()` function runs, so you can draw on them in either `setup()` or `draw()`.
+With `0.0.3`, the page globals are ready in `draw()`. Starting with
+`0.0.4`, they are also ready in `setup()`; call any page sizing helper
+before drawing so it can rebuild the canvases at the requested size.
 
 ## Configuration (`window.zine`)
+
+The local build also accepts these settings in `createZine(width, height, options)`.
+Call it at the start of `setup()`, before drawing on the pages. Dimensions
+accept the same units as `zinePageSize()`, and `options.dpi` controls print resolution.
+
+```js
+function setup() {
+  createZine("8.5in", "11in", {
+    title: "My Zine",
+    accentColor: "#7c3aed",
+    cam: false,
+  });
+  cover.background(255);
+  cover.text("Hello", 40, 60);
+}
+```
+
+Existing sketches can keep `window.zine`, `zinePageSize()`, and `zinePaperSize()`.
+The local build also recognizes classic `setupPage()` and `drawPage()` callbacks
+when the corresponding p5 `setup()` or `draw()` function is absent.
 
 Set options **before** `setup()` runs:
 

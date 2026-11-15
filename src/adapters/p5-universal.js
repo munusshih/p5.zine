@@ -100,4 +100,40 @@ function registerUniversalAddon() {
   patchInitZineForGlobals();
 }
 
+function installLegacySketchCallbacks() {
+  const pages = ["cover", "one", "two", "three", "back"];
+  const setupCallbacks = ["setupPage", ...pages.map((page) => page + "Set")];
+  const drawCallbacks = [
+    "drawPage",
+    ...pages.map((page) => page + "Page"),
+    ...pages.map((page) => page + "Draw"),
+  ];
+  const hasCallback = (names) =>
+    names.some((name) => typeof window[name] === "function");
+  const runCallbacks = (names) => {
+    for (const name of names) {
+      if (typeof window[name] === "function") {
+        window[name]();
+      }
+    }
+  };
+
+  if (!hasCallback(setupCallbacks) && !hasCallback(drawCallbacks)) {
+    return;
+  }
+
+  // Classic sketches also used a top-level const or let for their settings.
+  if (!window.zine && typeof zine !== "undefined") {
+    window.zine = zine;
+  }
+
+  if (typeof window.setup !== "function" && hasCallback(setupCallbacks)) {
+    window.setup = () => runCallbacks(setupCallbacks);
+  }
+  if (typeof window.draw !== "function" && hasCallback(drawCallbacks)) {
+    window.draw = () => runCallbacks(drawCallbacks);
+  }
+}
+
 registerUniversalAddon();
+window.addEventListener("p5Ready", installLegacySketchCallbacks, { once: true });

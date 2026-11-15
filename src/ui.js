@@ -6,6 +6,16 @@ function injectStyles() {
     return;
   }
 
+  if (
+    window.location.protocol !== "file:" &&
+    !document.documentElement.hasAttribute("data-zine-offline")
+  ) {
+    const fonts = document.createElement("link");
+    fonts.rel = "stylesheet";
+    fonts.href = "https://fonts.googleapis.com/css2?family=Averia+Libre&family=Bebas+Neue&family=Bungee+Shade&family=Faster+One&family=Inconsolata&family=Playfair+Display:ital@1&family=Rubik+Puddles&family=Ultra&display=swap";
+    document.head.appendChild(fonts);
+  }
+
   const styleSheet = document.createElement("style");
   styleSheet.innerText = styles;
   document.head.appendChild(styleSheet);

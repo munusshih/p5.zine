@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Averia+Libre&family=Bebas+Neue&family=Bungee+Shade&family=Faster+One&family=Inconsolata&family=Playfair+Display:ital@1&family=Rubik+Puddles&family=Ultra&display=swap');
-
 html[data-theme=light] {
   --color-text: #333;
   --accent-color: var(--zine-accent-color, #ed225d);

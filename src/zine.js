@@ -114,6 +114,19 @@ function resolveP5Instance(candidate) {
   return candidate;
 }
 
+function removeGraphics(graphics) {
+  if (typeof graphics?.remove !== "function") {
+    return;
+  }
+
+  // p5 1.11.13 removes the renderer as an element of its graphics buffer.
+  // Its element cleanup expects the buffer to have an element list.
+  if (graphics._renderer?._pInst === graphics && !graphics._elements) {
+    graphics._elements = [];
+  }
+  graphics.remove();
+}
+
 class ZinePage {
   constructor(p, def, pWidth, pHeight) {
     this.key = def.key;
@@ -174,7 +187,9 @@ class ZineManager {
     this.applyCoreSettings();
     this.updateTitle();
     this.updateDownloadLabels();
-    this.initCapture();
+    if (window.zine) {
+      this.initCapture();
+    }
 
     if (this.previewMode === PREVIEW_MODES.CANVAS) {
       this.resizeCanvas();
@@ -313,9 +328,7 @@ class ZineManager {
       if (page.wrapper) {
         page.wrapper.remove();
       }
-      if (typeof page.graphics?.remove === "function") {
-        page.graphics.remove();
-      }
+      removeGraphics(page.graphics);
     });
 
     this.applyConfig();
@@ -332,6 +345,7 @@ class ZineManager {
 
   finishSetup() {
     this.setupComplete = true;
+    this.initCapture();
 
     if (this.previewMode === PREVIEW_MODES.CANVAS) {
       this.updateAdaptiveWidth();
@@ -530,8 +544,12 @@ class ZineManager {
       return;
     }
 
+    if (this.p.selfie) {
+      return;
+    }
     this.p.selfie = this.p.createCapture(this.p.VIDEO);
     this.p.selfie.hide();
+    exposeWritableGlobal("selfie", this.p.selfie);
   }
 
   getLayout() {
@@ -851,9 +869,7 @@ class ZineManager {
 
       const exportGraphic = this.buildPageExportGraphic(page);
       exportGraphic.save(`p5-zine-${index}-${stamp}.${extension}`);
-      if (typeof exportGraphic.remove === "function") {
-        exportGraphic.remove();
-      }
+      removeGraphics(exportGraphic);
     });
 
     this.borderYes = true;
@@ -916,9 +932,7 @@ class ZineManager {
         pdf.save(`${fileName}.pdf`);
       }
 
-      if (typeof printGraphics?.remove === "function") {
-        printGraphics.remove();
-      }
+      removeGraphics(printGraphics);
     } catch (error) {
       console.error("PDF export failed:", error);
     } finally {
@@ -980,6 +994,37 @@ export function zineAddon(p5, fn, lifecycles) {
       return;
     }
     instance._zine.setPagesPixelDensity(num);
+  };
+
+  fn.createZine = function (width, height, options = {}) {
+    const instance = resolveP5Instance(this);
+    const manager = instance._zine;
+    if (!manager || manager.setupComplete) {
+      console.warn("Call createZine() at the start of setup().");
+      return;
+    }
+
+    window.zine = { ...window.zine, ...options };
+    const previousPreview = manager.previewMode;
+    instance.zinePageSize(width, height, options);
+    if (manager.previewMode !== previousPreview) {
+      if (manager.previewMode === PREVIEW_MODES.CANVAS) {
+        manager.canvas.parent("#myCanvas");
+        manager.canvas.show();
+        manager.updateAdaptiveWidth();
+      } else {
+        manager.canvas.hide();
+        manager.bindPointerTracking();
+      }
+    }
+    instance.frameRate(manager.frameRate);
+    document.documentElement.style.setProperty(
+      "--zine-accent-color",
+      manager.accentColor,
+    );
+    manager.updateTitle();
+    manager.updateDownloadLabels();
+    manager.initCapture();
   };
 
   fn.zinePageSize = function (width, height, options = {}) {
